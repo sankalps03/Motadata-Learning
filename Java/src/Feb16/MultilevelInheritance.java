@@ -23,7 +23,7 @@ class Child1 extends Parent1
 
 }
 public class MultilevelInheritance {
-    public static void main(String args[])
+    public static void main(String [] args)
     {
         Child1 childTestObj = new Child1();
 

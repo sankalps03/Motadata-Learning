@@ -70,7 +70,7 @@ class WagonR extends Car{
 }
 public class ConstructorChainingFromParent {
 
-    public static void main(String args[]) {
+    public static void main(String []args) {
 
         WagonR car1 = new WagonR("WagonR 2022", "Automobile", 4, 4, 5);
 

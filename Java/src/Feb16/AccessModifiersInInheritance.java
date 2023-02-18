@@ -1,7 +1,7 @@
 package Feb16;
 
  class BaseClass{
-     private int num = 30;
+     private final int num = 30;
      protected int num2 = 50;
 
      private void method1(){

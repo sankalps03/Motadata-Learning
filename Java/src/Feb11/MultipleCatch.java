@@ -7,11 +7,12 @@ public class MultipleCatch {
 
             array[10] = 30 / 0;
 
-        } catch (ArithmeticException e) {
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
 
             System.out.println(e.getMessage());
 
-        } catch (ArrayIndexOutOfBoundsException e) {
+        }catch (ArithmeticException e) {
 
             System.out.println(e.getMessage());
 

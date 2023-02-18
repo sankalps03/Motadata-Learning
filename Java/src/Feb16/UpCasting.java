@@ -3,7 +3,7 @@ package Feb16;
 class Parent2 {
     String name;
 
-    static void method()
+    void method()
     {
         System.out.println("Method from Parent");
     }
@@ -11,7 +11,7 @@ class Parent2 {
 class Child2 extends Parent2 {
     int id;
 
-    static void method()
+    void method()
     {
         System.out.println("Method from Child");
     }
@@ -34,7 +34,7 @@ public class UpCasting {
         // Child c = new Parent(); - > compile time error
 
         // Downcasting Explicitly
-        Child2 downcastedObj = (Child2)refObject;
+        Child2 downcastedObj = new Child2();
 
         downcastedObj.id = 1;
 
