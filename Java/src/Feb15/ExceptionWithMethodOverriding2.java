@@ -1,7 +1,7 @@
 package Feb15;
 // Java Program to Illustrate Exception Handling with Method Overriding
 // Where SuperClass declares an exception and SubClass declares a child exception
-// of the SuperClass declared Exception
+// to the SuperClass declared Exception
 
 class ParentClass {
      void method() throws RuntimeException{

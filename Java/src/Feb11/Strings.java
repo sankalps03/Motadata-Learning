@@ -1,7 +1,7 @@
 package Feb11;
 
 public class Strings {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Strings object = new Strings();
 
         object.stringConcatenate("Sankalp",null);
@@ -17,6 +17,7 @@ public class Strings {
         String sObj2 = new String("sankalp");
 
         object.comparison(sObj1,sObj2);
+        object.comparison(sLiteral1,sLiteral2);
     }
     int stringLength(String string){
 

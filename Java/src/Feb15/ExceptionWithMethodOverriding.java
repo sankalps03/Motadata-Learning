@@ -4,8 +4,11 @@ package Feb15;
 // Where SuperClass doesn't declare any exception and
 // SubClass declare Unchecked exception
 
- class SuperClass {
-    void method(){
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+class SuperClass {
+    void method() {
 
         System.out.println("Super Class");
     }
@@ -13,7 +16,7 @@ package Feb15;
 class SubClass extends SuperClass {
     // if we declare checked exception in subclass method here we get a compilation error
 
-    void method() throws  ArithmeticException{
+    void method() throws ArithmeticException {
         System.out.println("Sub class");
     }
 }
@@ -21,8 +24,9 @@ public class ExceptionWithMethodOverriding {
     public static void main(String[] args){
 
         SuperClass testObject = new SubClass();
+            testObject.method();
 
-        testObject.method();
+
     }
 
 }

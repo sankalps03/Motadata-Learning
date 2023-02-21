@@ -18,9 +18,9 @@ public class Overloading2 {
 
     }
     //two float parameters
-     long add(long a, long b)
+     double add(double a, double b)
     {
-        long sum = a+b;
+        double sum = a+b;
         System.out.println("long data type" + sum);
         return sum;
     }

@@ -5,22 +5,21 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 
 public class TryWithResources {
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
-        try(FileOutputStream stream = new FileOutputStream("file.txt"); BufferedReader bReader = new BufferedReader(new FileReader("sankalp.txt"))) {
+        try (FileOutputStream stream = new FileOutputStream("file.txt"); BufferedReader bReader = new BufferedReader(new FileReader("sankalp.txt"))) {
 
-            String text ;
+            String text;
 
-            while ((text = bReader.readLine()) != null){
+            while ((text = bReader.readLine()) != null) {
 
-                byte array[] =text.getBytes();
+                byte array[] = text.getBytes();
 
                 stream.write(array);
 
             }
             System.out.println("File content copied");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
             System.out.println(e);
         }
