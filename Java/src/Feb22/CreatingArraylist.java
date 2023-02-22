@@ -6,26 +6,33 @@ public class CreatingArraylist {
 
     public static void main(String[] args) {
 
-        List<String> animals = new ArrayList<>();
+        try {
 
-        // add method adds element at the end of the list
+            List<String> animals = new ArrayList<>();
 
-        animals.add("Lion");
+            // add method adds element at the end of the list
 
-        animals.add("Tiger");
+            animals.add("Lion");
 
-        animals.add("Cat");
+            animals.add("Tiger");
 
-        System.out.println(animals);
+            animals.add("Cat");
 
-        animals.add("Dog");
+            System.out.println(animals);
 
-        System.out.println(animals);
+            animals.add("Dog");
 
-        // Adding an element at a particular index in an ArrayList
-        animals.add(2, "Elephant");
+            System.out.println(animals);
 
-        System.out.println(animals);
+            // Adding an element at a particular index in an ArrayList
+            animals.add(2, "Elephant");
 
+            System.out.println(animals);
+
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+        }
     }
 }

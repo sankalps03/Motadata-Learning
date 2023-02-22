@@ -6,21 +6,29 @@ public class MergeSort {
 
     public static void main(String[] args) {
 
-        Random random = new Random();
+        try {
 
-        int[] array = new int[8];
 
-        for (int index = 0; index < array.length; index++) {
+            Random random = new Random();
 
-            array[index] = random.nextInt(1000)+1;
+            int[] array = new int[8];
+
+            for (int index = 0; index < array.length; index++) {
+
+                array[index] = random.nextInt(1000) + 1;
+            }
+            printArray(array);
+
+            sort(array, 0, array.length - 1);
+
+            System.out.println("Sorted Array");
+
+            printArray(array);
         }
-        printArray(array);
+        catch (Exception e){
 
-        sort(array,0,array.length-1);
-
-        System.out.println("Sorted Array");
-
-        printArray(array);
+            e.printStackTrace();
+        }
     }
 
 

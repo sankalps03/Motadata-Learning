@@ -7,32 +7,39 @@ public class SearchElementsInArrayList {
 
     public static void main(String[] args) {
 
-        List<String> names = new ArrayList<>();
+        try {
 
-        names.add("John");
+            List<String> names = new ArrayList<>();
 
-        names.add("Alice");
+            names.add("John");
 
-        names.add("Bob");
+            names.add("Alice");
 
-        names.add("Steve");
+            names.add("Bob");
 
-        names.add("John");
+            names.add("Steve");
 
-        names.add("Steve");
+            names.add("John");
 
-        names.add("Maria");
+            names.add("Steve");
 
-        System.out.println("Does names array contain \"Bob\"? : " + names.contains("Bob"));
+            names.add("Maria");
 
-        // Find the index of the first occurrence of an element in an ArrayList
-        System.out.println("indexOf \"Steve\": " + names.indexOf("Steve"));
+            System.out.println("Does names array contain \"Bob\"? : " + names.contains("Bob"));
 
-        System.out.println("indexOf \"Mark\": " + names.indexOf("Mark"));
+            // Find the index of the first occurrence of an element in an ArrayList
+            System.out.println("indexOf \"Steve\": " + names.indexOf("Steve"));
 
-        // Find the index of the last occurrence of an element in an ArrayList
-        System.out.println("lastIndexOf \"John\" : " + names.lastIndexOf("John"));
+            System.out.println("indexOf \"Mark\": " + names.indexOf("Mark"));
 
-        System.out.println("lastIndexOf \"Bill\" : " + names.lastIndexOf("Bill"));
+            // Find the index of the last occurrence of an element in an ArrayList
+            System.out.println("lastIndexOf \"John\" : " + names.lastIndexOf("John"));
+
+            System.out.println("lastIndexOf \"Bill\" : " + names.lastIndexOf("Bill"));
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+        }
     }
 }

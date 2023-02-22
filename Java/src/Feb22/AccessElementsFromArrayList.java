@@ -7,42 +7,50 @@ public class AccessElementsFromArrayList {
 
     public static void main(String[] args) {
 
-            List<String> topCompanies = new ArrayList<>();
+            try {
 
-            // Check if an ArrayList is empty
-            System.out.println("Is the topCompanies list empty? : " + topCompanies.isEmpty());
 
-            topCompanies.add("Google");
+                    List<String> topCompanies = new ArrayList<>();
 
-            topCompanies.add("Apple");
+                    // Check if an ArrayList is empty
+                    System.out.println("Is the topCompanies list empty? : " + topCompanies.isEmpty());
 
-            topCompanies.add("Microsoft");
+                    topCompanies.add("Google");
 
-            topCompanies.add("Amazon");
+                    topCompanies.add("Apple");
 
-            topCompanies.add("Facebook");
+                    topCompanies.add("Microsoft");
 
-            // Find the size of an ArrayList
-            System.out.println("Here are the top " + topCompanies.size() + " companies");
+                    topCompanies.add("Amazon");
 
-            System.out.println(topCompanies);
+                    topCompanies.add("Facebook");
 
-            // Retrieve the element at a given index
-            String bestCompany = topCompanies.get(0);
+                    // Find the size of an ArrayList
+                    System.out.println("Here are the top " + topCompanies.size() + " companies");
 
-            String secondBestCompany = topCompanies.get(1);
+                    System.out.println(topCompanies);
 
-            String lastCompany = topCompanies.get(topCompanies.size() - 1);
+                    // Retrieve the element at a given index
+                    String bestCompany = topCompanies.get(0);
 
-            System.out.println("Best Company: " + bestCompany);
+                    String secondBestCompany = topCompanies.get(1);
 
-            System.out.println("Second Best Company: " + secondBestCompany);
+                    String lastCompany = topCompanies.get(topCompanies.size() - 1);
 
-            System.out.println("Last Company in the list: " + lastCompany);
+                    System.out.println("Best Company: " + bestCompany);
 
-            // Modify the element at a given index
-            topCompanies.set(4, "Walmart");
+                    System.out.println("Second Best Company: " + secondBestCompany);
 
-            System.out.println("Modified top companies list: " + topCompanies);
-        }
+                    System.out.println("Last Company in the list: " + lastCompany);
+
+                    // Modify the element at a given index
+                    topCompanies.set(4, "Walmart");
+
+                    System.out.println("Modified top companies list: " + topCompanies);
+            }
+            catch (Exception e){
+
+                    e.printStackTrace();
+            }
+    }
 }

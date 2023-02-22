@@ -6,51 +6,58 @@ import java.util.List;
 public class RemoveElementsFromArrayList {
     public static void main(String[] args) {
 
-        List<String> programmingLanguages = new ArrayList<>();
+        try {
 
-        programmingLanguages.add("C");
+            List<String> programmingLanguages = new ArrayList<>();
 
-        programmingLanguages.add("C++");
+            programmingLanguages.add("C");
 
-        programmingLanguages.add("Java");
+            programmingLanguages.add("C++");
 
-        programmingLanguages.add("Kotlin");
+            programmingLanguages.add("Java");
 
-        programmingLanguages.add("Python");
+            programmingLanguages.add("Kotlin");
 
-        programmingLanguages.add("Perl");
+            programmingLanguages.add("Python");
 
-        programmingLanguages.add("Ruby");
+            programmingLanguages.add("Perl");
 
-        System.out.println("Initial List: " + programmingLanguages);
+            programmingLanguages.add("Ruby");
 
-        // Remove the element at index `5`
-        programmingLanguages.remove(5);
+            System.out.println("Initial List: " + programmingLanguages);
 
-        System.out.println("After remove(5): " + programmingLanguages);
+            // Remove the element at index `5`
+            programmingLanguages.remove(5);
 
-        // Remove the first occurrence of the given element from the ArrayList
-        // (The remove() method returns false if the element does not exist in the ArrayList)
-        programmingLanguages.remove("Kotlin");
+            System.out.println("After remove(5): " + programmingLanguages);
 
-        System.out.println("After remove(\"Kotlin\"): " + programmingLanguages);
+            // Remove the first occurrence of the given element from the ArrayList
+            // (The remove() method returns false if the element does not exist in the ArrayList)
+            programmingLanguages.remove("Kotlin");
 
-        List<String> scriptingLanguages = new ArrayList<>();
+            System.out.println("After remove(\"Kotlin\"): " + programmingLanguages);
 
-        scriptingLanguages.add("Python");
+            List<String> scriptingLanguages = new ArrayList<>();
 
-        scriptingLanguages.add("Ruby");
+            scriptingLanguages.add("Python");
 
-        scriptingLanguages.add("Perl");
+            scriptingLanguages.add("Ruby");
+
+            scriptingLanguages.add("Perl");
 
 
-        // Remove all the elements that exist in a given collection
-        programmingLanguages.removeAll(scriptingLanguages);
+            // Remove all the elements that exist in a given collection
+            programmingLanguages.removeAll(scriptingLanguages);
 
-        System.out.println("After removeAll(scriptingLanguages): " + programmingLanguages);
+            System.out.println("After removeAll(scriptingLanguages): " + programmingLanguages);
 
-        programmingLanguages.clear();
+            programmingLanguages.clear();
 
-        System.out.println("After clear(): " + programmingLanguages);
+            System.out.println("After clear(): " + programmingLanguages);
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+        }
     }
 }

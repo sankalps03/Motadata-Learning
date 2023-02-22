@@ -9,51 +9,58 @@ public class IterateOverArrayList {
 
     public static void main(String[] args) {
 
-        List<String> tvShows = new ArrayList<>();
+        try {
 
-        tvShows.add("Breaking Bad");
+            List<String> tvShows = new ArrayList<>();
 
-        tvShows.add("Game Of Thrones");
+            tvShows.add("Breaking Bad");
 
-        tvShows.add("Friends");
+            tvShows.add("Game Of Thrones");
 
-        tvShows.add("Prison break");
+            tvShows.add("Friends");
 
-        System.out.println("Iterate using forEach and lambda ");
+            tvShows.add("Prison break");
 
-        tvShows.forEach(tvShow -> {
-            System.out.println(tvShow);
-        });
+            System.out.println("Iterate using forEach and lambda ");
 
-        System.out.println("Iterate using an iterator()");
+            tvShows.forEach(tvShow -> {
+                System.out.println(tvShow);
+            });
 
-        Iterator<String> tvShowIterator = tvShows.iterator();
+            System.out.println("Iterate using an iterator()");
 
-        while (tvShowIterator.hasNext()) {
+            Iterator<String> tvShowIterator = tvShows.iterator();
 
-            String tvShow = tvShowIterator.next();
+            while (tvShowIterator.hasNext()) {
 
-            System.out.println(tvShow);
+                String tvShow = tvShowIterator.next();
+
+                System.out.println(tvShow);
+            }
+
+            System.out.println("\n=== Iterate using an iterator() forEachRemaining() method");
+
+            tvShowIterator = tvShows.iterator();
+
+            tvShowIterator.forEachRemaining(tvShow -> {
+                System.out.println(tvShow);
+            });
+
+            System.out.println("Iterate using a listIterator() to traverse in both directions");
+
+            // Here, we start from the end of the list and traverse backwards.
+            ListIterator<String> tvShowListIterator = tvShows.listIterator(tvShows.size());
+
+            while (tvShowListIterator.hasPrevious()) {
+
+                String tvShow = tvShowListIterator.previous();
+
+                System.out.println(tvShow);
+            }
         }
+        catch (Exception e){
 
-        System.out.println("\n=== Iterate using an iterator() forEachRemaining() method");
-
-        tvShowIterator = tvShows.iterator();
-
-        tvShowIterator.forEachRemaining(tvShow -> {
-            System.out.println(tvShow);
-        });
-
-        System.out.println("Iterate using a listIterator() to traverse in both directions");
-
-        // Here, we start from the end of the list and traverse backwards.
-        ListIterator<String> tvShowListIterator = tvShows.listIterator(tvShows.size());
-
-        while (tvShowListIterator.hasPrevious()) {
-
-            String tvShow = tvShowListIterator.previous();
-
-            System.out.println(tvShow);
+            e.printStackTrace();
         }
     }
 }

@@ -7,22 +7,30 @@ import java.util.List;
 public class ArrayListCollectionsSort {
 
     public static void main(String[] args) {
-        List<Integer> numbers = new ArrayList<>();
 
-        numbers.add(13);
+        try {
 
-        numbers.add(7);
+            List<Integer> numbers = new ArrayList<>();
 
-        numbers.add(18);
+            numbers.add(13);
 
-        numbers.add(5);
+            numbers.add(7);
 
-        numbers.add(2);
+            numbers.add(18);
 
-        System.out.println("Before : " + numbers);
+            numbers.add(5);
 
-        Collections.sort(numbers);
+            numbers.add(2);
 
-        System.out.println("After : " + numbers);
+            System.out.println("Before : " + numbers);
+
+            Collections.sort(numbers);
+
+            System.out.println("After : " + numbers);
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+        }
     }
 }
