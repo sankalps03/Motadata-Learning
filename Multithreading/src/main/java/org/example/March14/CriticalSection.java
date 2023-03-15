@@ -9,6 +9,8 @@ public class CriticalSection {
 
         DecrementingThread decrementingThread = new DecrementingThread(inventoryCounter);
 
+        try{
+
         incrementingThread.start();
 
         decrementingThread.start();
@@ -18,6 +20,11 @@ public class CriticalSection {
         decrementingThread.join();
 
         System.out.println("We currently have " + inventoryCounter.getItems() + " items");
+
+        }catch (Exception exception){
+
+            exception.printStackTrace();
+        }
     }
 
     public static class DecrementingThread extends Thread {
@@ -32,7 +39,7 @@ public class CriticalSection {
         @Override
         public void run() {
 
-            for (int i = 0; i < 1000000; i++) {
+            for (int iterator = 0; iterator < 1000000; iterator++) {
 
                 inventoryCounter.decrement();
             }
@@ -51,7 +58,7 @@ public class CriticalSection {
         @Override
         public void run() {
 
-            for (int i = 0; i < 1000000; i++) {
+            for (int iterator = 0; iterator < 1000000; iterator++) {
 
                 inventoryCounter.increment();
             }

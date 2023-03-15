@@ -5,26 +5,32 @@ public class DataRace {
 
         SharedClass sharedClass = new SharedClass();
 
-        Thread thread1 = new Thread(() -> {
+        try {
 
-            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            Thread thread1 = new Thread(() -> {
 
-                sharedClass.increment();
-            }
-        });
+                for (int iterator = 0; iterator < Integer.MAX_VALUE; iterator++) {
 
-        Thread thread2 = new Thread(() -> {
+                    sharedClass.increment();
+                }
+            });
 
-            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            Thread thread2 = new Thread(() -> {
 
-                sharedClass.checkForDataRace();
-            }
+                for (int iterator = 0; iterator < Integer.MAX_VALUE; iterator++) {
 
-        });
+                    sharedClass.checkForDataRace();
+                }
 
-        thread1.start();
+            });
 
-        thread2.start();
+            thread1.start();
+
+            thread2.start();
+        }catch (Exception exception){
+
+            exception.printStackTrace();
+        }
     }
 
     public static class SharedClass {

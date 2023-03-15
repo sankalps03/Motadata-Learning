@@ -52,9 +52,9 @@ public class ImageProcessing {
 
         int height = originalImage.getHeight() / numberOfThreads;
 
-        for(int i = 0; i < numberOfThreads ; i++) {
+        for(int iterator = 0; iterator < numberOfThreads ; iterator++) {
 
-            final int threadMultiplier = i;
+            final int threadMultiplier = iterator;
 
             Thread thread = new Thread(() -> {
 

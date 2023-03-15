@@ -74,11 +74,11 @@ public class MultithreadedCalculation {
         @Override
         public void run() {
 
-            for(BigInteger i = BigInteger.ZERO;
+            for(BigInteger num = BigInteger.ZERO;
 
-                i.compareTo(power) !=0;
+                num.compareTo(power) !=0;
 
-                i = i.add(BigInteger.ONE)) {
+                num = num.add(BigInteger.ONE)) {
 
                 result = result.multiply(base);
             }
