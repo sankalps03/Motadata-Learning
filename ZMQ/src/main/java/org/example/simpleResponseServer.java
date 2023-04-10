@@ -16,7 +16,7 @@ public class simpleResponseServer
             
             ZMQ.Socket socket = context.createSocket(SocketType.REP);
             
-            socket.bind("tcp://*:5555");
+            socket.connect("tcp://*:5560");
             
             while (!Thread.currentThread().isInterrupted())
             {

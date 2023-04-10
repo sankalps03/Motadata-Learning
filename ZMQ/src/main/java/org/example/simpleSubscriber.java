@@ -18,7 +18,9 @@ public class simpleSubscriber
             
             ZMQ.Socket subscriber = context.createSocket(SocketType.SUB);
             
-            subscriber.connect("tcp://localhost:5556");
+            subscriber.connect("tcp://localhost:5559");
+            
+            System.out.println("connected");
             
             String filter = (args.length > 0) ? args[0] : "10001 ";
             
