@@ -8,7 +8,6 @@ public class MergeSort {
 
         try {
 
-
             Random random = new Random();
 
             int[] array = new int[8];

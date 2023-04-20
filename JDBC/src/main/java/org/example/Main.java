@@ -77,11 +77,8 @@ public class Main
             
             ResultSet resultSet = statement.executeQuery(select);
             
-            System.out.println("--------------------------------------------------------");
-            
             processResult(resultSet);
             
-            System.out.println("--------------------------------------------------------");
             
             System.out.println("Aggregate functions");
             
@@ -133,22 +130,13 @@ public class Main
             
             System.out.println("Table in ascending order by name");
             
-            System.out.println("--------------------------------------------------------");
-            
             processResult(resultSetOrdered);
-            
-            
-            System.out.println("--------------------------------------------------------");
             
             System.out.println("Get in range (id > 101)");
             
             ResultSet resultSetRange = statement.executeQuery(range);
             
-            System.out.println("--------------------------------------------------------");
-            
             processResult(resultSetRange);
-            
-            System.out.println("--------------------------------------------------------");
             
             statement.executeUpdate(update);
             
@@ -156,11 +144,7 @@ public class Main
             
             ResultSet resultSetUpdate = statement.executeQuery(select);
             
-            System.out.println("--------------------------------------------------------");
-            
             processResult(resultSetUpdate);
-            
-            System.out.println("--------------------------------------------------------");
             
             statement.executeUpdate(delete);
             
@@ -168,16 +152,16 @@ public class Main
             
             ResultSet resultSetDelete = statement.executeQuery(select);
             
-            System.out.println("--------------------------------------------------------");
-            
             processResult(resultSetDelete);
-            
-            System.out.println("--------------------------------------------------------");
+
+            Thread.sleep(5000);
             
             statement.executeUpdate(drop);
             
             System.out.println("Registration table dropped");
             
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
     
@@ -188,6 +172,8 @@ public class Main
         {
             
             int count = 0;
+            
+            System.out.println("--------------------------------------------------------");
             
             while (resultSet.next())
             {
@@ -201,6 +187,8 @@ public class Main
                 
                 System.out.println("Guest #" + count + ": " + ID + ", " + name + ", " + age);
             }
+            
+            System.out.println("--------------------------------------------------------");
             
         }
         catch (Exception e)
