@@ -1,5 +1,6 @@
 package org.example;
 
+import com.github.brainlag.nsq.NSQConfig;
 import com.github.brainlag.nsq.NSQConsumer;
 import com.github.brainlag.nsq.lookup.DefaultNSQLookup;
 import com.github.brainlag.nsq.lookup.NSQLookup;
@@ -15,16 +16,35 @@ public class consumer1
         
         nsqLookup.addLookupAddress("localhost",4161);
         
-        NSQConsumer consumer1 = new NSQConsumer(nsqLookup,"Harsh","CHANNEL",(nsqMessage ->
+        NSQConfig config = new NSQConfig();
+        
+        config.setMaxInFlight(1);
+        
+        try(NSQConsumer consumer1 = new NSQConsumer(nsqLookup,"hello","CHANNEL",(nsqMessage ->
         {
             String msg = new String(nsqMessage.getMessage());
             
-            System.out.println(msg);
+            if (!msg.contains("Sankalp")){
+                
+                System.out.println(msg);
+                
+            }else {
+                nsqMessage.requeue();
+                
+            }
             
             nsqMessage.finished();
-        }));
+        }),config))
+        {
+            consumer1.start();
+            
+        }catch (Exception e)
+        {
+            
+            e.printStackTrace();
+        }
         
-        consumer1.start();
+        
     }
     
 }

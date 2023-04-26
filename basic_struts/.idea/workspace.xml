@@ -15,29 +15,25 @@
       <change afterPath="$PROJECT_DIR$/../JSON/src/main/java/org/example/JacksonConvertJSONToMap.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../Java/src/Mar7/CircularArrayLoop.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../Java/src/Mar7/MinimumHourTraining.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Multithreading/src/main/java/org/example/March15/test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../SocketProgram/SocketProgram.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../SocketProgramming/src/main/java/org/example/chatApplicationOneToOne/ServerSocket/clientDatagram.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../SocketProgramming/src/main/java/org/example/chatApplicationOneToOne/ServerSocket/serverDatagram.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../SocketProgramming/src/main/java/org/example/chatApplicationOneToOne/ServerSocket/single.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/webSocket/messageDecoder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/webSocket/messageEncoder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/webSocket/messageModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/webSocket/webSocketEndPoint.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/struts.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../simpleWebApp/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/worker2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Java/src/Feb22/MergeSort.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java/src/Feb22/MergeSort.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LongPing/src/main/java/pingAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LongPing/src/main/java/pingAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LongPing/src/main/java/pingRuntime.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LongPing/src/main/java/pingRuntime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LongPing/src/main/java/webSocketEndPoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/../LongPing/src/main/java/webSocketEndPoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../LongPing/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/../LongPing/src/main/webapp/index.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Multithreading/src/main/java/org/example/March14/Factorial.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Multithreading/src/main/java/org/example/March14/Factorial.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NSQ/src/main/java/org/example/consumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NSQ/src/main/java/org/example/consumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NSQ/src/main/java/org/example/consumer1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NSQ/src/main/java/org/example/consumer1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NSQ/src/main/java/org/example/producer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../NSQ/src/main/java/org/example/producer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SocketProgram/src/ChatApplicationOneToOne/clientDatagram.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SocketProgram/src/ChatApplicationOneToOne/clientDatagram.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../simpleWebApp/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/../simpleWebApp/src/main/webapp/index.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/simplePublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/simplePublisher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/simpleRequestClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/simpleRequestClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/simpleResponseServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/simpleResponseServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/simpleSubscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/simpleSubscriber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/ventilator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/ventilator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ZMQ/src/main/java/org/example/worker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,23 +55,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/home/sankalp/MotadataLearning/simpleWebApp",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "Facets",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/sankalp/MotadataLearning/basic_struts&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Facets&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources" />
@@ -1857,6 +1853,8 @@
       <updated>1680618787307</updated>
       <workItem from="1680618788489" duration="2492000" />
       <workItem from="1680671854652" duration="13698000" />
+      <workItem from="1681378678900" duration="778000" />
+      <workItem from="1681713551846" duration="23000" />
     </task>
     <servers />
   </component>

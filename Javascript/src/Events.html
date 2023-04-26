@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body onload="checkCookies()" >
+
+<h2>JavaScript HTML Events</h2>
+
+<p>Checking on load if cookies are enabled or not</p>
+
+<p id="load" style="color: blue"></p>
+
+<p>Click the button to display the date.</p>
+
+<button onclick="displayDate()">The time is?</button>
+
+<script src="DOM.js"></script>
+
+<p id="demo"></p>
+
+Enter your name: <input type="text" id="fName" onchange="upperCase()">
+
+<p>When you leave the input field, a function is triggered which transforms the input text to upper case.</p>
+
+<div onmouseover="mOver(this)" onmouseout="mOut(this)"
+     style="background-color:red ;width:120px;height:20px;padding:40px;">
+  Mouse Over Me</div>
+
+<div style=" width: 10px;
+           height: 10px;"> </div>
+
+<div onmousedown="mDown(this)" onmouseup="mUp(this)"
+     style="background-color: red;width:90px;height:20px;padding:40px;">
+  Click Me</div>
+
+
+</body>
+</html>

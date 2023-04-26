@@ -8,7 +8,7 @@ import java.util.List;
 public class Factorial {
     public static void main(String[] args) {
 
-        List<Long> inputNumbers = Arrays.asList(100000000L, 3435L, 35435L, 2324L, 4656L, 23L, 5556L);
+        List<Long> inputNumbers = Arrays.asList(100000000L, 343445L, 3547635L, 287324L, 465676L, 2376L, 555456L);
 
         List<FactorialThread> threads = new ArrayList<>();
 
@@ -21,7 +21,7 @@ public class Factorial {
 
         for (Thread thread : threads) {
 
-            thread.setDaemon(true);
+//            thread.setDaemon(true);
 
             thread.start();
         }
@@ -63,9 +63,11 @@ public class Factorial {
         @Override
         public void run() {
 
-            this.result = factorial(inputNumber);
 
-            this.isFinished = true;
+
+           this.result = factorial(inputNumber);
+
+           this.isFinished = true;
         }
 
         public BigInteger factorial(long n) {

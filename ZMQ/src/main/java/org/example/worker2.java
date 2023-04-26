@@ -1,10 +1,11 @@
 package org.example;
 
+
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 import org.zeromq.ZContext;
 
-public class worker
+public class worker2
 {
     
     public static void main(String[] args)
@@ -14,15 +15,11 @@ public class worker
         {
             ZMQ.Socket receiver = context.createSocket(SocketType.PULL);
             
-            
-            if (receiver.connect("tcp://localhost:5557")){
-                
-                System.out.println("connected");
-            }
+            receiver.connect("tcp://localhost:5557");
             
             
             ZMQ.Socket sender = context.createSocket(SocketType.PUSH);
-            receiver.setRcvHWM(2);
+            receiver.setHWM(1);
             
             sender.connect("tcp://localhost:5558");
             
@@ -36,7 +33,7 @@ public class worker
                 
                 System.out.println(string);
                 
-//                Thread.sleep(1000);
+                Thread.sleep(5000);
                 
                 sender.send(ZMQ.MESSAGE_SEPARATOR, 0);
             }
@@ -48,3 +45,4 @@ public class worker
     }
     
 }
+

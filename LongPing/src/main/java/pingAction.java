@@ -1,5 +1,4 @@
 import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionSupport;
 
 public class pingAction implements Action {
 
@@ -15,7 +14,11 @@ public class pingAction implements Action {
     @Override
     public String execute() throws Exception {
 
-        pingRuntime.execute(ipAddress);
+        pingRuntime ping = new pingRuntime(ipAddress);
+
+        Thread pinging = new Thread(ping);
+
+        pinging.start();
 
         return SUCCESS;
     }

@@ -4,6 +4,7 @@
     <title>Long Ping</title>
 
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
@@ -40,6 +41,17 @@
 
 
     function onMessage(event) {
+
+        if(event.data == "SEND"){
+
+            var sessionName = window.localStorage.getItem("name");
+
+            if(sessionName != null){
+
+                websocket.send(sessionName)
+            }
+
+        }
 
         console.log(event);
 
@@ -92,17 +104,22 @@
 
         console.log("Sending " + message);
 
+        window.localStorage.setItem("name",message)
+
+        websocket.send(message);
+
         $.ajax({
             type:'POST',
             url:'http://localhost:8080/ping',
             data:{ipAddress : message},
             success:function(response)
             {
-                display("pinging" + response);
 
             }
 
         });
+        display("pinging: " + message);
+
 
     }
 

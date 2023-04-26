@@ -17,7 +17,10 @@ public class simpleRequestClient
             System.out.println("Connecting to hello world server");
             
             ZMQ.Socket socket = context.createSocket(SocketType.REQ);
+            
             socket.connect("tcp://localhost:5559");
+            
+            socket.setHWM(1);
             
             for (int requestNbr = 0; requestNbr != 100; requestNbr++)
             {
@@ -25,7 +28,7 @@ public class simpleRequestClient
                 
                 System.out.println("Sending Hello " + requestNbr);
                 
-                socket.send(request.getBytes(ZMQ.CHARSET), 0);
+                socket.send(request.getBytes(ZMQ.CHARSET), 1);
                 
                 byte[] reply = socket.recv(0);
                 

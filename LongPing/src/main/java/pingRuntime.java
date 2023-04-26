@@ -3,11 +3,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 
-public class pingRuntime {
+public class pingRuntime  implements Runnable{
 
+    String ip ;
 
-    public static void execute(String ip){
+    pingRuntime(String ip){
 
+        this.ip = ip;
+
+    }
+
+    @Override
+    public void run() {
 
 
         System.out.println(ip);
@@ -20,7 +27,7 @@ public class pingRuntime {
         }
         StringBuilder pingSummary = new StringBuilder();
 
-        String ping = "ping -c 50 " + ip;
+        String ping = "ping -c 10 " + ip;
 
         BufferedReader input = null;
 
@@ -40,7 +47,7 @@ public class pingRuntime {
                 pingSummary = pingSummary.append("\n").append(input_line_by_line);
 
             }
-            webSocketEndPoint.getPingData(pingSummary.toString());
+            webSocketEndPoint.getPingData(ip,pingSummary.toString());
         }
         catch (IOException e) {
 
@@ -61,4 +68,8 @@ public class pingRuntime {
             }
         }
     }
+
+
+
+
 }

@@ -18,6 +18,8 @@ public class ventilator
             
             sender.bind("tcp://*:5557");
             
+//            sender.setHWM(1);
+            
             ZMQ.Socket sink = context.createSocket(SocketType.PUSH);
             
             sink.connect("tcp://localhost:5558");
@@ -36,19 +38,21 @@ public class ventilator
             
             int total_msec = 0;
             
-            for (task_nbr = 0; task_nbr < 100; task_nbr++)
+            for (task_nbr = 0; task_nbr < 10; task_nbr++)
             {
                 int workload;
                 
-                workload = srandom.nextInt(100) + 1;
                 
-                total_msec += workload;
+                total_msec += task_nbr;
                 
-                System.out.print(workload + ".");
+//                System.out.println(task_nbr +);
                 
-                String string = String.format("%d", workload);
+                String string = String.format("%d", task_nbr);
                 
-                sender.send(string, 0);
+                if(!sender.send(string, ZMQ.NOBLOCK)){
+                    
+                    System.out.println(string);
+                }
             }
             System.out.println("Total expected cost: " + total_msec + " msec");
             

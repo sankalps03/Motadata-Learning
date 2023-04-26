@@ -20,6 +20,8 @@ public class simpleSubscriber
             
             subscriber.connect("tcp://localhost:5559");
             
+//            subscriber.setHWM(100);
+            
             System.out.println("connected");
             
             String filter = (args.length > 0) ? args[0] : "10001 ";
@@ -49,6 +51,7 @@ public class simpleSubscriber
             }
             
         }
+        
     }
     
 }

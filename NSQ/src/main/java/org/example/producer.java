@@ -2,6 +2,9 @@ package org.example;
 
 import com.github.brainlag.nsq.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class producer
 {
@@ -19,16 +22,22 @@ public class producer
             
             int count = 0;
             
-            while ( true )
+            while (true )
             {
-                String message = "This is sankalp "+ count;
+                String message = "harsh "+ count;
                 
                 String message1 = "This is Harsh "+ count;
                 
+                List<byte[]> list = new ArrayList<>();
+                list.add(message.getBytes());
+                list.add(message1.getBytes());
                 
-                producer.produce("Sankalp",(message.getBytes()));
+//                NSQCommand.multiPublish("hello", list);
                 
-                producer.produce("Harsh" ,message1.getBytes() );
+                
+                  producer.produce("hello",(message.getBytes()));
+//
+//                producer.produce("Harsh" ,message1.getBytes() );
                 
                 count++;
                 

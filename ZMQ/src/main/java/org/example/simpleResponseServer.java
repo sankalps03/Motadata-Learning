@@ -16,7 +16,9 @@ public class simpleResponseServer
             
             ZMQ.Socket socket = context.createSocket(SocketType.REP);
             
-            socket.connect("tcp://*:5560");
+            socket.bind("tcp://*:5559");
+            
+            socket.setHWM(1);
             
             while (!Thread.currentThread().isInterrupted())
             {
@@ -28,7 +30,7 @@ public class simpleResponseServer
                 
                 String response = "world";
                 
-                socket.send(response.getBytes(ZMQ.CHARSET), 0);
+                socket.send(response.getBytes(ZMQ.CHARSET), 1);
             }
         }
     }

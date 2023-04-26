@@ -18,7 +18,7 @@ public class simplePublisher
             
             publisher.bind("tcp://*:5559");
             
-//            publisher.bind("ipc://weather");
+            publisher.bind("ipc://weather");
             
             Random srandom = new Random(System.currentTimeMillis());
             
@@ -34,9 +34,11 @@ public class simplePublisher
                 
                 String update = String.format("%05d %d %d", zipcode, temperature, relhumidity);
                 
-                publisher.setHWM(2000);
+//                publisher.setHWM(1);
                 
-                publisher.send(update, ZMQ.NOBLOCK);
+                publisher.send(update,ZMQ.NOBLOCK);
+                
+                System.out.println(update);
             }
         }
     }

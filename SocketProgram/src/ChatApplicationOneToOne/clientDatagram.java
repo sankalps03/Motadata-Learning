@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class clientDatagram {
 
-    byte[] receiveData = new byte[512];
+    byte[] receiveData = new byte[7];
     byte[] sendData;
 
     AtomicBoolean isExit = new AtomicBoolean(false);
