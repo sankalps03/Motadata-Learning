@@ -1,8 +1,23 @@
+import com.google.gson.Gson;
 import com.opensymphony.xwork2.Action;
 
 public class action implements Action {
     String name;
     String email;
+
+    String dataJson;
+
+    String Motadataally;
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    String result;
 
     public String getName() {
         return name;
@@ -28,14 +43,28 @@ public class action implements Action {
         Motadataally = motadataally;
     }
 
-    String Motadataally;
+
+
 
 
     @Override
     public String execute() throws Exception {
 
+        System.out.println("inset called");
+
         database.insert(this);
 
         return SUCCESS;
     }
+
+    public String select(){
+
+        System.out.println("select called");
+
+        result = database.select();
+
+        return SUCCESS;
+    }
+
+
 }

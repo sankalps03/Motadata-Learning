@@ -8,7 +8,16 @@
     <constant name="struts.devMode" value="false" />
     <constant name="struts.action.excludePattern" value="/chat"/>
 
+
     <package name="default" extends="struts-default">
+        <result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult">
+                <param name="noCache">true</param>
+                <param name="excludeNullProperties">true</param>
+                <param name="enableGZIP">true</param>
+
+            </result-type>
+        </result-types>
         <action name="">
             <result>/index.jsp</result>
         </action>
@@ -16,7 +25,14 @@
         <action name="submit" class="action">
 
 
-            <result name="success"> </result>
+            <result name="success">/index.jsp</result>
+        </action>
+
+        <action name="select" class="action" method="select">
+
+            <result name="success" type="json">
+                <param name="root">result</param>
+            </result>
         </action>
     </package>
 

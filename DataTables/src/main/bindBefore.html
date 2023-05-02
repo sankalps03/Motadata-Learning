@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    p {
+      background: green;
+      color: white;
+      padding: 5px;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-git.js">
+  </script>
+
+</head>
+<body style="text-align: center;">
+<h1 style="color: green;">
+  SANKALP
+</h1>
+<p>
+  Click on the paragraphs to start
+  adding new paragraphs
+</p>
+
+<script>
+
+  let cnt = 0;
+
+  $("body").delegate("p", "click",
+          function() {
+
+            $(this).after(
+                    "<p>New paragraph " +
+                    cnt + "</p>");
+
+            $(this).after(
+                    "<button>New paragraph " +
+                    cnt + "</button>");
+
+            cnt++;
+          });
+  $("body").on("click","button",function () {
+
+    $(this).fadeOut(500)
+    
+  })
+</script>
+</body>
+</html>
