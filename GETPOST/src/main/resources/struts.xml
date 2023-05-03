@@ -22,10 +22,8 @@
             <result>/index.jsp</result>
         </action>
 
-        <action name="submit" class="action">
-
-
-            <result name="success">/index.jsp</result>
+        <action name="submit" class="action" method="insert">
+            <result name="success" type="json"></result>
         </action>
 
         <action name="select" class="action" method="select">

@@ -5,7 +5,15 @@ public class action implements Action {
     String name;
     String email;
 
-    String dataJson;
+    public String getInserted() {
+        return inserted;
+    }
+
+    public void setInserted(String inserted) {
+        this.inserted = inserted;
+    }
+
+    String inserted;
 
     String Motadataally;
 
@@ -47,12 +55,14 @@ public class action implements Action {
 
 
 
-    @Override
-    public String execute() throws Exception {
+
+    public String insert() throws Exception {
 
         System.out.println("inset called");
 
         database.insert(this);
+
+        System.out.println("insert completed");
 
         return SUCCESS;
     }
@@ -67,4 +77,8 @@ public class action implements Action {
     }
 
 
+    @Override
+    public String execute() throws Exception {
+        return null;
+    }
 }

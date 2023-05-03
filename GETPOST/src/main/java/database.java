@@ -22,13 +22,13 @@ public class database {
 
             System.out.println("Connected to H2 database.");
 
-            PreparedStatement pst = connection.prepareStatement("insert  into Motadata values(?,?,?)");
+            PreparedStatement pst = connection.prepareStatement("insert  into Motadata values(?,?,?,?)");
 
-            pst.setString(1, act.getName());
+            pst.setString(2, act.getName());
 
-            pst.setString(2, act.getEmail());
+            pst.setString(3, act.getEmail());
 
-            pst.setString(3, act.getMotadataally());
+            pst.setString(4, act.getMotadataally());
 
             pst.execute();
 

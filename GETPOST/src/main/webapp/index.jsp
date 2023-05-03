@@ -61,11 +61,6 @@
 
     </form>
 
-    <div>
-    <button id="select" class="btn btn-success">
-    Retrieve
-</button>
-    </div>
 
     <table id="example" class="display" style="width:100%">
         <thead>
