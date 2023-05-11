@@ -2,15 +2,24 @@ package com.example.starter.verticles;
 
 import java.util.UUID;
 
-import io.vertx.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
 public class MainVerticle extends AbstractVerticle {
 
-//  private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
+  static{
+
+    System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
+
+  }
+
+  private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
 
   public static void main(String[] args) {
 
@@ -20,16 +29,9 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void init(Vertx vertx, Context context) {
-    System.out.println("is this called first");
-
-    super.init(vertx, context);
-  }
-
-  @Override
   public void start(final Promise<Void> startPromise) throws Exception {
 
-    System.out.println("Start {}"+ getClass().getName());
+    LOG.info("Start {}", getClass().getName());
 
     vertx.deployVerticle(new VerticleA());
 
