@@ -9,24 +9,29 @@ public class Worker extends AbstractVerticle {
 
   public static void main(String[] args) {
     var vertx = Vertx.vertx();
-    vertx.deployVerticle(new Worker());
+    vertx.deployVerticle(Worker.class.getName());
   }
 
   @Override
   public void start(final Promise<Void> startPromise) throws Exception {
-    vertx.deployVerticle(new WorkerVerticle(),
-      new DeploymentOptions()
-        .setWorker(true)
-        .setWorkerPoolSize(1)
-        .setWorkerPoolName("my-worker-verticle")
-    );
-    startPromise.complete();
+//    vertx.deployVerticle(WorkerVerticle.class.getName(),
+//      new DeploymentOptions()
+//        .setWorkerPoolSize(10)
+//        .setWorkerPoolName("my-worker-verticle").setInstances(5)
+//    );
     executeBlockingCode();
+    System.out.println("after 1");
+    executeBlockingCode();
+    System.out.println("after 2");
+    executeBlockingCode();
+
+
+    startPromise.complete();
   }
 
   private void executeBlockingCode() {
     vertx.executeBlocking(event -> {
-      System.out.println("Executing blocking code");
+      System.out.println("Executing blocking code " + Thread.currentThread().getName());
       try {
         Thread.sleep(5000);
         event.complete();

@@ -7,9 +7,16 @@ public class WorkerVerticle extends AbstractVerticle {
 
   @Override
   public void start(final Promise<Void> startPromise) throws Exception {
-    System.out.println("Deployed as worker verticle.");
+
+    vertx.executeBlocking(event ->{
+    System.out.println("Deployed as worker verticle."+ Thread.currentThread().getName());
+      try {
+        Thread.sleep(5000);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      System.out.println("Blocking operation done.");
     startPromise.complete();
-    Thread.sleep(5000);
-    System.out.println("Blocking operation done.");
+  });
   }
 }

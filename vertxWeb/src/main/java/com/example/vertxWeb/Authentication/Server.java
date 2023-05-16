@@ -18,7 +18,7 @@ public class Server extends AbstractVerticle {
   }
 
 
-  private static final Logger LOG = LoggerFactory.getLogger(Server.class);
+//  private static final Logger LOG = LoggerFactory.getLogger(Server.class);
 
   public static void main(String[] args) {
 
@@ -41,11 +41,15 @@ public class Server extends AbstractVerticle {
 
       PropertyFileAuthentication authenticate = PropertyFileAuthentication.create(vertx,"/home/sankalp/MotadataLearning/vertxWeb/src/main/resources/users.properties");
 
-      router.route("/private/*").handler(RedirectAuthHandler.create(authenticate, "/loginPage.html"));
+      ChainAuthHandler chain = ChainAuthHandler.all();
+
+      chain.add(BasicAuthHandler.create(authenticate));
+
+      chain.add(RedirectAuthHandler.create(authenticate, "/loginPage.html"));
+
+      router.route("/private/*").handler(chain);
 
       router.route("/private/*").handler(StaticHandler.create().setCachingEnabled(false).setWebRoot("Private"));
-
-      router.route("/private/*").handler(StaticHandler.create().setCachingEnabled(false).setWebRoot("cookie"));
 
       router.route("/loginHandler").handler(FormLoginHandler.create(authenticate));
 
