@@ -11,30 +11,20 @@ import io.vertx.ext.auth.KeyStoreOptions;
 import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.web.handler.JWTAuthHandler;
-import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
-import io.vertx.ext.web.codec.BodyCodec;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class publicApiVerticle extends AbstractVerticle {
 
   private static final int HTTP_PORT = 8080;
 
   private static final Logger logger = LoggerFactory.getLogger(publicApiVerticle.class);
-
-  private WebClient webClient;
 
   private JWTAuth jwtAuth;
 
@@ -68,15 +58,11 @@ public class publicApiVerticle extends AbstractVerticle {
 
     router.get(prefix + "/:username").handler(this::checkUser).handler(this::fetchUser);
 
-    router.get(prefix + "/:username").handler(this::checkUser).handler(this::updateUser);
+    router.get(prefix + "/:username/total").handler(this::checkUser).handler(this::totalSteps);
 
-    router.get(prefix + "/:username").handler(this::checkUser).handler(this::totalSteps);
+    router.get(prefix + "/:username/:year/:month").handler(this::checkUser).handler(this::monthlySteps);
 
-    router.get(prefix + "/:username").handler(this::checkUser).handler(this::monthlySteps);
-
-    router.get(prefix + "/:username").handler(this::checkUser).handler(this::dailySteps);
-
-    webClient = WebClient.create(vertx);
+    router.get(prefix + "/:username/:year/:month/:day").handler(this::checkUser).handler(this::dailySteps);
 
     vertx.createHttpServer().requestHandler(router).listen(HTTP_PORT).onSuccess(done -> logger.info("Listening on port 4000"));
 
@@ -142,51 +128,34 @@ public class publicApiVerticle extends AbstractVerticle {
 
     String username = payload.getString("username");
 
-//    EventBus eventBus = vertx.eventBus();
-//
-//    eventBus.request("token" ,payload,reply ->{
-//
-//      if(reply.succeeded()){
-//        fetchUserDetails(username)
-//          .onSuccess(details -> details.body().getString("deviceId"))
-//          .onSuccess(deviceID -> makeJwtToken(username,deviceID))
-//          .onComplete(result ->{
-//
-//            if (result.succeeded()){
-//
-//              sendToken(context,result.result().bodyAsString());
-//            }
-//            else {
-//              handleAuthError(context,result.cause());
-//            }
-//
-//
-//          });
-//      }
-//    });
+    EventBus eventBus = vertx.eventBus();
 
-      webClient.post(3000, "localhost", "authenticate")
-      .expect(ResponsePredicate.SC_SUCCESS)
-      .sendJson(payload)
-      .flatMap(resp -> fetchUserDetails(username))
-      .map(resp -> resp.body().getString("deviceID"))
-      .map(deviceID -> makeJwtToken(username, deviceID))
-      .onComplete(result->{
+    eventBus.request("token" ,payload,reply ->{
 
+      if(reply.succeeded()){
+        fetchUser(context)
+          .onSuccess(details -> {String deviceID =details.getString("deviceId");
+            makeJwtToken(username,deviceID).onComplete(result ->{
 
+              if (result.succeeded()){
 
-      });
+                sendToken(context,result.result());
+              }
+              else {
+                handleAuthError(context,result.cause());
+              }
+          });
+          });
+      }
+    });
+
   }
 
-  private Future<HttpResponse<JsonObject>> fetchUserDetails(String username) {
-    return webClient
-      .get(3000, "localhost", "/" + username)
-      .expect(ResponsePredicate.SC_OK)
-      .as(BodyCodec.jsonObject())
-      .send();
-  }
 
-  private String makeJwtToken(String username, String deviceId) {
+  private Future<String> makeJwtToken(String username, String deviceId) {
+
+    Promise<String> promise = Promise.promise();
+
     JsonObject claims = new JsonObject()
       .put("deviceId", deviceId);
 
@@ -196,7 +165,11 @@ public class publicApiVerticle extends AbstractVerticle {
       .setIssuer("10k-steps-api")
       .setSubject(username);
 
-    return jwtAuth.generateToken(claims, jwtOptions);
+    String token = jwtAuth.generateToken(claims, jwtOptions);
+
+    promise.complete(token);
+
+    return promise.future() ;
 
   }
 
@@ -212,7 +185,9 @@ public class publicApiVerticle extends AbstractVerticle {
     context.response().putHeader("Content-Type", "application/jwt").end(token);
   }
 
-  private void fetchUser(RoutingContext context) {
+  private Future<JsonObject> fetchUser(RoutingContext context) {
+
+    Promise<JsonObject> promise = Promise.promise();
 
     EventBus eventBus = vertx.eventBus();
 
@@ -222,14 +197,16 @@ public class publicApiVerticle extends AbstractVerticle {
 
       if (reply.succeeded()){
 
-        forwardJsonOrStatusCode(context,user);
+        promise.complete(user);
       }
       else {
 
-        sendBadGateway(context,reply.cause());
+        promise.fail(reply.cause());
       }
 
-    });}
+    });
+    return promise.future();
+  }
 
   private void forwardJsonOrStatusCode(RoutingContext ctx,JsonObject resp) {
 
@@ -237,26 +214,6 @@ public class publicApiVerticle extends AbstractVerticle {
         .putHeader("Content-Type", "application/json")
         .end(resp.encode());
 
-  }
-
-  private void  updateUser(RoutingContext context) {
-
-    webClient.put(3000, "localhost", "/" + context.pathParam("username"))
-      .putHeader("Content-Type", "application/json")
-      .expect(ResponsePredicate.SC_OK)
-      .sendBuffer(context.body().buffer())
-      .onComplete(result->{
-
-        if (result.succeeded()){
-
-          context.response().end();
-        }
-        else {
-
-          sendBadGateway(context,result.cause());
-        }
-
-      });
   }
 
   private void totalSteps(RoutingContext context) {

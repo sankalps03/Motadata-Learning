@@ -23,7 +23,7 @@ public class BLOB {
             
             Statement statement = connection.createStatement();
             
-             statement.execute(sql);
+//             statement.execute(sql);
             
             System.out.println("Created table image.");
             
