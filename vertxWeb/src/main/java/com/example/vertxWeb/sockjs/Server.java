@@ -21,6 +21,7 @@ public class Server extends AbstractVerticle {
     Vertx vertx1 =Vertx.vertx();
     vertx1.deployVerticle(Server.class.getName());
 
+
   }
 
   @Override

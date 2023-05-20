@@ -22,6 +22,19 @@
     });
   };
 
+  $.ajax({
+
+    url:
+      'https://reqres.in/api/users/2',
+
+    type: "GET",
+
+    success: function (data) {
+      var x = JSON.stringify(data);
+      console.log(x);
+    }
+  });
+
 </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.example.vertxWeb.Authentication;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.ext.auth.properties.PropertyFileAuthentication;
 import io.vertx.ext.web.Router;
@@ -24,7 +25,8 @@ public class Server extends AbstractVerticle {
 
     Vertx vertx = Vertx.vertx();
 
-    vertx.deployVerticle(Server.class.getName());
+    vertx.deployVerticle(Server.class.getName(),new DeploymentOptions().setInstances(3));
+//    vertx.deployVerticle(com.example.vertxWeb.Cookie.Server.class.getName());
 
   }
 

@@ -3,6 +3,7 @@ package com.example.starter.eventBus;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.DeliveryOptions;
 
 public class requestResponse {
 
@@ -34,7 +35,7 @@ public class requestResponse {
       vertx.setPeriodic(1000,send ->{
 
       eventBus.<String>request(ADDRESS, message, reply -> {
-        System.out.println("Response: {}"+reply.result().body());
+        System.out.println("Response: {}"+reply.result().body()+Thread.currentThread().getName());
       });
       });
     }
@@ -47,8 +48,10 @@ public class requestResponse {
 
       startPromise.complete();
 
+      DeliveryOptions opt = new DeliveryOptions().setSendTimeout(3000);
+
       vertx.eventBus().<String>consumer(RequestVerticle.ADDRESS, message -> {
-        System.out.println("Received Message: {}"+ message.body());
+        System.out.println("Received Message: {}"+ message.body()+Thread.currentThread().getName());
         message.reply("Received your message. Thanks!");
       });
     }
@@ -62,8 +65,8 @@ public class requestResponse {
       startPromise.complete();
 
       vertx.eventBus().<String>consumer(RequestVerticle.ADDRESS, message -> {
-        System.out.println(" RV1 Received Message: {}"+ message.body());
-        message.reply("RV1 Received your message. Thanks!");
+        System.out.println(" RV1 Received Message: {}"+ message.body()+Thread.currentThread().getName());
+//        message.reply("RV1 Received your message. Thanks!");
       });
     }
   }

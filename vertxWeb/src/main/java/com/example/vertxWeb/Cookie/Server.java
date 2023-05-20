@@ -13,7 +13,7 @@ public class Server extends AbstractVerticle {
 
     Vertx vertx = Vertx.vertx();
 
-    vertx.deployVerticle(Server.class.getName());
+//    vertx.deployVerticle(Server.class.getName());
 
   }
 

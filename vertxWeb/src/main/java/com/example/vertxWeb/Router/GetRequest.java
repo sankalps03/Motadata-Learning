@@ -32,7 +32,7 @@ public class GetRequest extends AbstractVerticle {
       Router router = Router.router(vertx);
       HttpServer server = vertx.createHttpServer();
 
-      server.requestHandler(router).listen(8080).onSuccess(ok -> System.out.println("Server listening at Port 8080"));
+      server.requestHandler(router).listen(8081).onSuccess(ok -> System.out.println("Server listening at Port 8080"));
 
       /*Path = "/home" */
 
@@ -80,6 +80,8 @@ public class GetRequest extends AbstractVerticle {
       {
 
         System.out.println("Request accepted by " + Thread.currentThread().getName());
+
+        System.out.println("sankalp "+context.body().asString());
 
         HttpServerResponse response = context.response();
 

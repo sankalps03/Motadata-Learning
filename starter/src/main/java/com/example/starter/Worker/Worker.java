@@ -9,7 +9,7 @@ public class Worker extends AbstractVerticle {
 
   public static void main(String[] args) {
     var vertx = Vertx.vertx();
-    vertx.deployVerticle(Worker.class.getName());
+    vertx.deployVerticle(Worker.class.getName(), new DeploymentOptions().setWorkerPoolName("abc").setWorkerPoolSize(1));
   }
 
   @Override
@@ -19,18 +19,21 @@ public class Worker extends AbstractVerticle {
 //        .setWorkerPoolSize(10)
 //        .setWorkerPoolName("my-worker-verticle").setInstances(5)
 //    );
+
+    vertx.setPeriodic(2000, done ->{
     executeBlockingCode();
-    System.out.println("after 1");
-    executeBlockingCode();
-    System.out.println("after 2");
-    executeBlockingCode();
+    });
+
+    vertx.setPeriodic(2000, done ->{
+      executeBlockingCode1();
+    });
 
 
     startPromise.complete();
   }
 
   private void executeBlockingCode() {
-    vertx.executeBlocking(event -> {
+    vertx.executeBlocking(event ->{
       System.out.println("Executing blocking code " + Thread.currentThread().getName());
       try {
         Thread.sleep(5000);
@@ -39,9 +42,28 @@ public class Worker extends AbstractVerticle {
         e.printStackTrace();
         event.fail(e);
       }
-    }, result -> {
+    },false, result -> {
       if (result.succeeded()) {
-        System.out.println("Blocking call done.");
+        System.out.println("Blocking call done."+System.currentTimeMillis());
+      } else {
+        System.out.println("Blocking call failed due to:"+ result.cause());
+      }
+    });
+  }
+
+  private void executeBlockingCode1() {
+    vertx.executeBlocking(event ->{
+      System.out.println("Executing blocking code 1 " + Thread.currentThread().getName());
+      /*try {
+        Thread.sleep(5000);
+        event.complete();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+        event.fail(e);
+      }*/
+    },false, result -> {
+      if (result.succeeded()) {
+        System.out.println("Blocking call done. 1 "+System.currentTimeMillis());
       } else {
         System.out.println("Blocking call failed due to:"+ result.cause());
       }
