@@ -37,6 +37,17 @@ public class userProfile extends AbstractVerticle {
 
       });
 
+      eventBus.consumer("fetchUser",message -> {
+
+        JsonObject userData = (JsonObject) message.body();
+
+        fetchUser(userData)
+          .onSuccess((registered ->{
+            message.reply(registered);
+          }));
+
+      });
+
 
     }catch (Exception exception){
 
@@ -112,9 +123,14 @@ public class userProfile extends AbstractVerticle {
     return promise.future();
   }
 
-  private void fetchUser (JsonObject message){
+  private Future<JsonObject> fetchUser (JsonObject message){
 
-    // fetch record from database
+    Promise<JsonObject> promise = Promise.promise();
+
+    String uerName = message.getString("username");
+
+
+    return null;
   }
 
   private void updateUser(JsonObject message){
