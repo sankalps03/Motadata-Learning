@@ -4,7 +4,7 @@ package com.example.Steps_tracker.publicAPI;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.ext.auth.JWTOptions;
 import io.vertx.ext.auth.KeyStoreOptions;
@@ -45,23 +45,23 @@ public class publicApiVerticle extends AbstractVerticle {
 
     router.post().handler(bodyHandler);
 
-    router.post().handler(bodyHandler);
-
     String prefix = "/api/v1";
 
     router.post(prefix + "/register").handler(this::register);
 
     router.post(prefix + "/token").handler(this::token);
 
-    router.get(prefix + "/:username/*").handler(JWTAuthHandler.create(jwtAuth));
+//    router.get(prefix + "/:username/*").handler(JWTAuthHandler.create(jwtAuth));
 
-    router.get(prefix + "/:username").handler(this::checkUser).handler(this::fetchUser);
+    router.get(prefix + "/:username").handler(this::fetchUser);
 
-    router.get(prefix + "/:username/total").handler(this::checkUser).handler(this::totalSteps);
+    router.get(prefix + "/:username/total").handler(this::totalSteps);
 
-    router.get(prefix + "/:username/:year/:month").handler(this::checkUser).handler(this::monthlySteps);
+      router.get(prefix + "/:username/:year").handler(this::yearlySteps);
 
-    router.get(prefix + "/:username/:year/:month/:day").handler(this::checkUser).handler(this::dailySteps);
+    router.get(prefix + "/:username/:year/:month").handler(this::monthlySteps);
+
+    router.get(prefix + "/:username/:year/:month/:day").handler(this::dailySteps);
 
     vertx.createHttpServer().requestHandler(router).listen(HTTP_PORT).onSuccess(done -> logger.info("Listening on port 4000"));
 
@@ -99,7 +99,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
       sendStatusCode(context,200);
 
-      context.response().end("user added");
+//      context.response().end("user added");
     }
     else {
 
@@ -192,13 +192,17 @@ public class publicApiVerticle extends AbstractVerticle {
 
     eventBus.request("fetchUser",context.body().asJsonObject(),reply ->{
 
-      JsonObject user = (JsonObject) reply.result().body();
+      JsonObject userData = (JsonObject) reply.result().body();
 
       if (reply.succeeded()){
 
-        promise.complete(user);
+        forwardJsonOrStatusCode(context,userData);
+
+        promise.complete(userData);
       }
       else {
+
+        sendBadGateway(context,reply.cause());
 
         promise.fail(reply.cause());
       }
@@ -217,29 +221,107 @@ public class publicApiVerticle extends AbstractVerticle {
 
   private void totalSteps(RoutingContext context) {
 
-    String deviceId = context.user().principal().getString("deviceId");
+    String deviceId = "1000";
+
+    EventBus eventBus = vertx.eventBus();
+
+    eventBus.request("totalSteps",deviceId,messageAsyncResult -> {
+
+      if(messageAsyncResult.succeeded()){
+
+        JsonObject totalStep = (JsonObject) messageAsyncResult;
+
+        forwardJsonOrStatusCode(context,totalStep);
+      }else {
+
+        sendBadGateway(context,messageAsyncResult.cause());
+      }
+
+    });
 
   }
 
   private void monthlySteps(RoutingContext context) {
 
-    String deviceId = context.user().principal().getString("deviceId");
+    JsonObject monthlyStep = new JsonObject();
 
-    String year = context.pathParam("year");
+    monthlyStep.put( "deviceId" , context.user().principal().getString("deviceId"));
 
-    String month = context.pathParam("month");
+    monthlyStep.put( "year" , context.pathParam("year"));
+
+    monthlyStep.put( "month" , context.pathParam("month"));
+
+    EventBus eventBus = vertx.eventBus();
+
+    eventBus.request("monthlySteps",monthlyStep,messageAsyncResult -> {
+
+      if(messageAsyncResult.succeeded()){
+
+        JsonObject totalStep = (JsonObject) messageAsyncResult;
+
+        forwardJsonOrStatusCode(context,totalStep);
+      }else {
+
+        sendBadGateway(context,messageAsyncResult.cause());
+      }
+
+    });
 
   }
 
   private void dailySteps(RoutingContext context) {
 
-    String deviceId = context.user().principal().getString("deviceId");
+    JsonObject dailyStep = new JsonObject();
 
-    String year = context.pathParam("year");
+    dailyStep.put( "deviceId" , context.user().principal().getString("deviceId"));
 
-    String month = context.pathParam("month");
+    dailyStep.put( "year" , context.pathParam("year"));
 
-    String day = context.pathParam("day");
+    dailyStep.put( "month" , context.pathParam("month"));
+
+    dailyStep.put( "day" , context.pathParam("day"));
+
+    EventBus eventBus = vertx.eventBus();
+
+    eventBus.request("dailySteps",dailyStep,messageAsyncResult -> {
+
+      if(messageAsyncResult.succeeded()){
+
+        JsonObject totalStep = (JsonObject) messageAsyncResult;
+
+        forwardJsonOrStatusCode(context,totalStep);
+      }else {
+
+        sendBadGateway(context,messageAsyncResult.cause());
+      }
+
+    });
+
+  }
+
+  private void yearlySteps(RoutingContext context) {
+
+    JsonObject yearlyStep = new JsonObject();
+
+    yearlyStep.put( "deviceId" , 1000);
+
+    yearlyStep.put( "year" , context.pathParam("year"));
+
+    EventBus eventBus = vertx.eventBus();
+
+    eventBus.request("yearlySteps",yearlyStep,messageAsyncResult -> {
+
+      if(messageAsyncResult.succeeded()){
+
+        JsonObject totalStep = (JsonObject) messageAsyncResult;
+
+        forwardJsonOrStatusCode(context,totalStep);
+      }else {
+
+        sendBadGateway(context,messageAsyncResult.cause());
+      }
+
+    });
 
   }
 }

@@ -127,10 +127,23 @@ public class userProfile extends AbstractVerticle {
 
     Promise<JsonObject> promise = Promise.promise();
 
-    String uerName = message.getString("username");
+    String userName = message.getString("username");
+
+    EventBus eventBus = vertx.eventBus();
+
+    eventBus.request("getUserDataFromDB",userName,reply ->{
+
+      JsonObject userData = (JsonObject) reply.result();
+
+      if (reply.succeeded()){
+
+        promise.complete(userData);
+      }
+
+    });
 
 
-    return null;
+    return promise.future();
   }
 
   private void updateUser(JsonObject message){

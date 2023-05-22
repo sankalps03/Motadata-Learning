@@ -16,7 +16,7 @@ public class h2Database  extends AbstractVerticle {
     try {
 
     JDBCPool pool = JDBCPool.pool(vertx,
-      new JDBCConnectOptions().setJdbcUrl("jdbc:h2:~/test").setUser("sa").setPassword(""),
+      new JDBCConnectOptions().setJdbcUrl("jdbc:h2:~/test").setUser("sankalp").setPassword("sankalp"),
       new PoolOptions().setMaxSize(16).setName("H2Pool")
     );
 
@@ -33,7 +33,18 @@ public class h2Database  extends AbstractVerticle {
 
         message.reply("user Registered");
       });
+    });
 
+    eventBus.consumer("getUserDataFromDB",message -> {
+
+      String userName = message.body().toString();
+
+      selectUser(pool,userName).onSuccess(userData ->{
+
+        message.reply(userData);
+
+
+      });
 
     });
   }catch (Exception exception){
@@ -50,20 +61,21 @@ public class h2Database  extends AbstractVerticle {
     System.out.println("insert ");
 
     String username = message.getString("username");
+
     String password = message.getString("password");
+
     String email = message.getString("email");
+
     String city = message.getString("city");
+
     String makePublic = message.getString("makePublic");
 
-    pool.preparedQuery("INSERT INTO USERDATA VALUES(?,?,?,?,?)")
+    pool.preparedQuery("INSERT INTO stepuser(username,password,email,city,makepublic) VALUES(?,?,?,?,?)")
       .execute(Tuple.of(username, password,email,city,makePublic))
       .onComplete(inserted ->{
         if(inserted.succeeded()){
 
           System.out.println("inserted");
-
-          long deviceId = inserted.result().iterator().next().getLong("deviceID");
-
 
           promise.complete();
 
@@ -91,13 +103,39 @@ public class h2Database  extends AbstractVerticle {
 
   }
 
-  private void selectUser(JDBCPool pool ,JsonObject message){
+  private Future<JsonObject> selectUser(JDBCPool pool ,String userName){
 
-    String deviceId = message.getString("deviceId");
+    Promise<JsonObject> promise = Promise.promise();
 
     pool
-      .preparedQuery("SELECT * FROM USERDATA WHERE deviceID > ?")
-      .execute(Tuple.of(deviceId));
+      .preparedQuery("SELECT * FROM stepuser WHERE userName > ?")
+      .execute(Tuple.of(userName))
+      .onComplete(fetchedData ->{
 
+        JsonObject userData = new JsonObject();
+
+        if(fetchedData.succeeded()){
+
+          for (Row row : fetchedData.result()) {
+
+            userData.put("username", row.getString("username"));
+
+            userData.put("email", row.getString("email"));
+
+            userData.put("city", row.getString("city"));
+
+            userData.put("makePublic", row.getString("makePublic"));
+
+            userData.put("deviceId", row.getString("deviceId"));
+
+          promise.complete(userData);
+        }
+        }else {
+
+          promise.fail(fetchedData.cause());
+        }
+      });
+
+    return promise.future();
   }
 }
