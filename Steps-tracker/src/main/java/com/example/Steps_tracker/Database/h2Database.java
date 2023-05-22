@@ -3,19 +3,23 @@ package com.example.Steps_tracker.Database;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import io.vertx.jdbcclient.*;
 import io.vertx.sqlclient.*;
 
+import java.util.HashSet;
+
 public class h2Database  extends AbstractVerticle {
+
+  JDBCPool pool;
 
   public void start(Promise<Void> startPromise){
 
     try {
 
-    JDBCPool pool = JDBCPool.pool(vertx,
+     pool = JDBCPool.pool(vertx,
       new JDBCConnectOptions().setJdbcUrl("jdbc:h2:~/test").setUser("sankalp").setPassword("sankalp"),
       new PoolOptions().setMaxSize(16).setName("H2Pool")
     );
@@ -47,6 +51,10 @@ public class h2Database  extends AbstractVerticle {
       });
 
     });
+
+    eventBus.consumer("devices").handler(this::selectDeviceId);
+
+
   }catch (Exception exception){
       exception.printStackTrace();
     }
@@ -137,5 +145,43 @@ public class h2Database  extends AbstractVerticle {
       });
 
     return promise.future();
+  }
+
+  private void selectDeviceId(Message message){
+
+    System.out.println(" i am selecting devices");
+
+    pool.preparedQuery("select deviceId from stepuser")
+      .execute().onComplete( rowSetAsyncResult->{
+
+
+        if(rowSetAsyncResult.succeeded()){
+
+          RowSet<Row> devicesRow = rowSetAsyncResult.result();
+
+          HashSet<Integer> devices = new HashSet<>();
+
+          for (Row device : devicesRow){
+
+            devices.add(device.getInteger("DEVICEID"));
+          }
+
+          message.reply(devices);
+
+          System.out.println(devices);
+
+        }else {
+
+          message.fail(500, String.valueOf(rowSetAsyncResult.cause()));
+
+          System.out.println("getting device failed" + rowSetAsyncResult.cause());
+
+
+
+        }
+
+      });
+
+
   }
 }

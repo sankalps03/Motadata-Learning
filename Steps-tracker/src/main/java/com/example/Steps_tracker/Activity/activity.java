@@ -8,6 +8,8 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.jdbcclient.JDBCConnectOptions;
 import io.vertx.jdbcclient.JDBCPool;
 import io.vertx.sqlclient.PoolOptions;
+import io.vertx.sqlclient.Row;
+import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,6 +167,23 @@ public class activity extends AbstractVerticle {
   }
 
   private void dailyRanking(Message message ){
+
+    pool.preparedQuery("SELECT deviceid, SUM(steps_count) as steps FROM stepcount WHERE" +
+        "(now() - sync_timestamp <= (interval '24 hours'))" +
+        "GROUP BY device_id ORDER BY steps DESC")
+      .execute().onComplete(rank->{
+
+        if(rank.succeeded()){
+
+          RowSet<Row> ranks = rank.result();
+
+//          for ()
+
+//          message.reply();
+        }
+
+        }
+        );
 
   }
 }

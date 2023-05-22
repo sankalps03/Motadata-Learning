@@ -27,6 +27,8 @@ public class userProfile extends AbstractVerticle {
 
       eventBus.consumer("register",message -> {
 
+        System.out.println("hiii "+message.body());
+
         JsonObject userData = (JsonObject) message.body();
 
 

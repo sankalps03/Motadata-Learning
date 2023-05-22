@@ -27,6 +27,8 @@ public class publicApiVerticle extends AbstractVerticle {
 
   private JWTAuth jwtAuth;
 
+  EventBus eventBus;
+
   public void start(Promise<Void> startPromise) {
 
     try {
@@ -39,7 +41,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
     Router router = Router.router(vertx);
 
-    EventBus eventBus = getVertx().eventBus();
+    eventBus = getVertx().eventBus();
 
     BodyHandler bodyHandler = BodyHandler.create();
 
@@ -87,8 +89,6 @@ public class publicApiVerticle extends AbstractVerticle {
 
   private void register(RoutingContext context) {
 
-    EventBus eventBus = vertx.eventBus();
-
     System.out.println(context.body().asString());
 
     JsonObject userData = context.body().asJsonObject();
@@ -126,8 +126,6 @@ public class publicApiVerticle extends AbstractVerticle {
     JsonObject payload = context.body().asJsonObject();
 
     String username = payload.getString("username");
-
-    EventBus eventBus = vertx.eventBus();
 
     eventBus.request("token" ,payload,reply ->{
 
@@ -188,8 +186,6 @@ public class publicApiVerticle extends AbstractVerticle {
 
     Promise<JsonObject> promise = Promise.promise();
 
-    EventBus eventBus = vertx.eventBus();
-
     eventBus.request("fetchUser",context.body().asJsonObject(),reply ->{
 
       JsonObject userData = (JsonObject) reply.result().body();
@@ -223,8 +219,6 @@ public class publicApiVerticle extends AbstractVerticle {
 
     String deviceId = "1000";
 
-    EventBus eventBus = vertx.eventBus();
-
     eventBus.request("totalSteps",deviceId,messageAsyncResult -> {
 
       if(messageAsyncResult.succeeded()){
@@ -250,8 +244,6 @@ public class publicApiVerticle extends AbstractVerticle {
     monthlyStep.put( "year" , context.pathParam("year"));
 
     monthlyStep.put( "month" , context.pathParam("month"));
-
-    EventBus eventBus = vertx.eventBus();
 
     eventBus.request("monthlySteps",monthlyStep,messageAsyncResult -> {
 
@@ -281,8 +273,6 @@ public class publicApiVerticle extends AbstractVerticle {
 
     dailyStep.put( "day" , context.pathParam("day"));
 
-    EventBus eventBus = vertx.eventBus();
-
     eventBus.request("dailySteps",dailyStep,messageAsyncResult -> {
 
       if(messageAsyncResult.succeeded()){
@@ -306,8 +296,6 @@ public class publicApiVerticle extends AbstractVerticle {
     yearlyStep.put( "deviceId" , 1000);
 
     yearlyStep.put( "year" , context.pathParam("year"));
-
-    EventBus eventBus = vertx.eventBus();
 
     eventBus.request("yearlySteps",yearlyStep,messageAsyncResult -> {
 
