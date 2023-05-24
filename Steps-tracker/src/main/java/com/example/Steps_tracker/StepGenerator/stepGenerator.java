@@ -1,37 +1,44 @@
 package com.example.Steps_tracker.StepGenerator;
 
+import com.example.Steps_tracker.Activity.activity;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
 
+
+
 public class stepGenerator extends AbstractVerticle {
+
+  EventBus eventBus;
+
+  private static HashSet<Integer> devices;
+
+  private static final Logger logger = LoggerFactory.getLogger(activity.class);
 
   public void start(Promise<Void> startPromise){
 
-    HashSet<Integer> devices = new HashSet<>();
+    System.out.println("step generator");
 
-    EventBus eventBus = vertx.eventBus();
+    devices = new HashSet<>();
+
+    eventBus = vertx.eventBus();
 
     Random random = new Random();
 
-    vertx.setPeriodic(3000, send ->
+    getDevices();
 
-    eventBus.request("devices","get devices", messageAsyncResult -> {
-
-      if(messageAsyncResult.succeeded())
-      {
-      devices.addAll((Collection<? extends Integer>) messageAsyncResult.result().body());
-
-        System.out.println(devices);
-      }
+    eventBus.consumer("newUserAdded", handler -> {
+      getDevices();
+    });
 
 
-    }));
 
     vertx.setPeriodic(3000, stepGenerator->{
 
@@ -45,15 +52,30 @@ public class stepGenerator extends AbstractVerticle {
 
         incomingSteps.put("steps",steps);
 
-        System.out.println(incomingSteps.toString());
+        eventBus.publish("incomingSteps",incomingSteps);
 
-        eventBus.publish("incomingSeps",incomingSteps);
+        logger.info("step generated for" + incomingSteps);
+
       }
 
     });
 
-    startPromise.complete();
+  }
 
+  private void getDevices() {
+
+    vertx.setTimer(10000, send ->
+
+      eventBus.request("devices","get devices", messageAsyncResult -> {
+
+        if(messageAsyncResult.succeeded())
+        {
+          devices.addAll((Collection<? extends Integer>) messageAsyncResult.result().body());
+
+          logger.info("Devicelist " + devices);
+        }
+
+      }));
   }
 
 }

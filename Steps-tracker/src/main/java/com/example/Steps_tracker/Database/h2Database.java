@@ -1,19 +1,25 @@
 package com.example.Steps_tracker.Database;
 
+import com.example.Steps_tracker.Activity.activity;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
 import io.vertx.jdbcclient.*;
 import io.vertx.sqlclient.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 
 public class h2Database  extends AbstractVerticle {
 
+  private static final Logger logger = LoggerFactory.getLogger(activity.class);
+
   JDBCPool pool;
+
+  EventBus eventBus;
 
   public void start(Promise<Void> startPromise){
 
@@ -24,99 +30,92 @@ public class h2Database  extends AbstractVerticle {
       new PoolOptions().setMaxSize(16).setName("H2Pool")
     );
 
-    EventBus eventBus = vertx.eventBus();
+    eventBus = vertx.eventBus();
 
-    eventBus.consumer("register_in_DB",message->{
+    eventBus.consumer("register_in_DB").handler(this::insertUser);
 
-      System.out.println(message.body().toString()+"  h2");
-
-      JsonObject userData = (JsonObject) message.body();
-
-      insertUser(pool,userData).onSuccess(inserted ->{
-
-
-        message.reply("user Registered");
-      });
-    });
-
-    eventBus.consumer("getUserDataFromDB",message -> {
-
-      String userName = message.body().toString();
-
-      selectUser(pool,userName).onSuccess(userData ->{
-
-        message.reply(userData);
-
-
-      });
-
-    });
+    eventBus.consumer("getUserDataFromDB").handler(this::selectUser);
 
     eventBus.consumer("devices").handler(this::selectDeviceId);
 
+    eventBus.consumer("deviceOwner").handler(this:: selectOwner);
+
 
   }catch (Exception exception){
       exception.printStackTrace();
     }
   }
 
-  private Future<Void> insertUser(JDBCPool pool, JsonObject message){
+  private void selectOwner(Message message) {
 
-    Promise<Void> promise = Promise.promise();
+    String deviceId = message.body().toString();
 
-    try {
+    pool.preparedQuery("SELECT username FROM stepuser WHERE deviceid = ?")
+      .execute(Tuple.of(deviceId))
+      .onComplete(user->{
 
-    System.out.println("insert ");
+        if(user.succeeded()){
 
-    String username = message.getString("username");
+          Row userName = user.result().iterator().next();
 
-    String password = message.getString("password");
+          message.reply(userName.getString(0));
 
-    String email = message.getString("email");
-
-    String city = message.getString("city");
-
-    String makePublic = message.getString("makePublic");
-
-    pool.preparedQuery("INSERT INTO stepuser(username,password,email,city,makepublic) VALUES(?,?,?,?,?)")
-      .execute(Tuple.of(username, password,email,city,makePublic))
-      .onComplete(inserted ->{
-        if(inserted.succeeded()){
-
-          System.out.println("inserted");
-
-          promise.complete();
-
+          logger.info("user for "+ deviceId+" :" + userName.getString(0));
         }
         else {
 
-          System.out.println("insert failed" + inserted.cause());
+          message.fail(user.cause().hashCode(),user.cause().getMessage());
 
-          promise.fail(inserted.cause());
-
+          logger.error("user for " + deviceId);
         }
       });
+  }
 
+  private void insertUser(Message message){
+
+    try {
+    JsonObject userData = (JsonObject) message.body();
+
+    String username = userData.getString("username");
+
+    String password = userData.getString("password");
+
+    String email = userData.getString("email");
+
+    String city = userData.getString("city");
+
+    pool.preparedQuery("INSERT INTO stepuser(username,password,email,city) VALUES(?,?,?,?)")
+      .execute(Tuple.of(username, password,email,city))
+      .onComplete(inserted ->{
+
+        if(inserted.succeeded()){
+
+          message.reply("new user added");
+
+          eventBus.publish("newUserAdded","new user added");
+
+          logger.info("new user "+username+" added to database");
+        }
+        else {
+
+          message.fail(inserted.cause().hashCode(),inserted.cause().getMessage());
+
+          logger.error("new user"+username+" addition failed :"+ inserted.cause().toString());
+        }
+      });
 
   }catch (Exception exception){
       exception.printStackTrace();
     }
-
-    return promise.future();
   }
 
-  private void updateUser(JDBCPool pool ,JsonObject message){
 
+  private void selectUser(Message message){
 
-
-  }
-
-  private Future<JsonObject> selectUser(JDBCPool pool ,String userName){
-
-    Promise<JsonObject> promise = Promise.promise();
+    String userName = message.body().toString();
 
     pool
-      .preparedQuery("SELECT * FROM stepuser WHERE userName > ?")
+      .preparedQuery("SELECT username,email,city,makepublic,deviceid FROM stepuser WHERE userName = ?")
       .execute(Tuple.of(userName))
       .onComplete(fetchedData ->{
 
@@ -126,34 +125,33 @@ public class h2Database  extends AbstractVerticle {
 
           for (Row row : fetchedData.result()) {
 
-            userData.put("username", row.getString("username"));
+            userData.put("username", row.getString(0));
 
-            userData.put("email", row.getString("email"));
+            userData.put("email", row.getString(1));
 
-            userData.put("city", row.getString("city"));
+            userData.put("city", row.getString(2));
 
-            userData.put("makePublic", row.getString("makePublic"));
+            userData.put("makePublic", row.getString(3));
 
-            userData.put("deviceId", row.getString("deviceId"));
+            userData.put("deviceId", row.getInteger(4));
 
-          promise.complete(userData);
+            message.reply(userData);
+
+            logger.info("Data fetched from database for:"+userName);
         }
         }else {
 
-          promise.fail(fetchedData.cause());
+          message.fail(fetchedData.cause().hashCode(),fetchedData.cause().toString());
+
+          logger.error("Data fetch failed for:"+userName);
         }
       });
-
-    return promise.future();
   }
 
   private void selectDeviceId(Message message){
 
-    System.out.println(" i am selecting devices");
-
     pool.preparedQuery("select deviceId from stepuser")
       .execute().onComplete( rowSetAsyncResult->{
-
 
         if(rowSetAsyncResult.succeeded()){
 
@@ -168,20 +166,15 @@ public class h2Database  extends AbstractVerticle {
 
           message.reply(devices);
 
-          System.out.println(devices);
+          logger.info("Device list from database"+devices);
 
         }else {
 
-          message.fail(500, String.valueOf(rowSetAsyncResult.cause()));
+          message.fail(rowSetAsyncResult.cause().hashCode(), String.valueOf(rowSetAsyncResult.cause()));
 
-          System.out.println("getting device failed" + rowSetAsyncResult.cause());
-
-
-
+          logger.error("getting device failed" + rowSetAsyncResult.cause().getMessage());
         }
-
       });
-
 
   }
 }

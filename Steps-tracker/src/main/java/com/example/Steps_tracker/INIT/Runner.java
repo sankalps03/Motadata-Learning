@@ -15,8 +15,11 @@ public class Runner {
     vertx.deployVerticle(h2Database.class.getName());
 
     vertx.deployVerticle(publicApiVerticle.class.getName());
+
     vertx.deployVerticle(userProfile.class.getName());
+
     vertx.deployVerticle(activity.class.getName());
+
     vertx.deployVerticle(stepGenerator.class.getName());
   }
 }

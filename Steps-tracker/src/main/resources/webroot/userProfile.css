@@ -1,0 +1,30 @@
+.container mt-5 mb-5{
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+  background-color: #000000;
+
+}
+.bg-black {
+  background: #000000;
+}
+
+.skill-block {
+  width: 30%;
+}
+
+@media (min-width: 991px) and (max-width:1200px) {
+  .skill-block {
+    padding: 32px !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .skill-block {
+    padding: 56px !important;
+  }
+}
+
+body {
+  background-color: #eeeeee;
+}

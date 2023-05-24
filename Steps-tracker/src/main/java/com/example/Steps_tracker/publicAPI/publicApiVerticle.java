@@ -4,19 +4,20 @@ package com.example.Steps_tracker.publicAPI;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.ext.auth.JWTOptions;
-import io.vertx.ext.auth.KeyStoreOptions;
-import io.vertx.ext.auth.jwt.JWTAuth;
-import io.vertx.ext.auth.jwt.JWTAuthOptions;
-import io.vertx.ext.web.handler.JWTAuthHandler;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
+import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.*;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
+import io.vertx.ext.web.handler.sockjs.SockJSHandler;
+import io.vertx.ext.web.sstore.LocalSessionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.vertx.ext.auth.properties.PropertyFileAuthentication;
 
 
 public class publicApiVerticle extends AbstractVerticle {
@@ -25,19 +26,13 @@ public class publicApiVerticle extends AbstractVerticle {
 
   private static final Logger logger = LoggerFactory.getLogger(publicApiVerticle.class);
 
-  private JWTAuth jwtAuth;
+  private final JsonArray ranking = new JsonArray();
 
   EventBus eventBus;
 
   public void start(Promise<Void> startPromise) {
 
     try {
-
-    jwtAuth = JWTAuth.create(vertx, new JWTAuthOptions()
-      .setKeyStore(new KeyStoreOptions()
-        .setType("jks")
-        .setPath("server-keystore.jks")
-        .setPassword("sankalp")));
 
     Router router = Router.router(vertx);
 
@@ -47,13 +42,26 @@ public class publicApiVerticle extends AbstractVerticle {
 
     router.post().handler(bodyHandler);
 
-    String prefix = "/api/v1";
+    router.route().handler(SessionHandler.create(LocalSessionStore.create(vertx)));
 
-    router.post(prefix + "/register").handler(this::register);
+    PropertyFileAuthentication authenticate = PropertyFileAuthentication.create(vertx,"/home/sankalp/MotadataLearning/Steps-tracker/src/main/resources/users.properties");
 
-    router.post(prefix + "/token").handler(this::token);
+    router.route("/logout").handler(context -> {
 
-//    router.get(prefix + "/:username/*").handler(JWTAuthHandler.create(jwtAuth));
+      context.clearUser();
+
+      context.response().putHeader("location", "/").setStatusCode(302).end();
+    });
+
+    String prefix = "/user";
+
+    router.route(prefix+"/*").handler(RedirectAuthHandler.create(authenticate, "/loginPage.html"));
+
+    router.route(prefix+"/*").handler(StaticHandler.create().setIndexPage("userProfile.html"));
+
+    router.route("/loginHandler").handler(FormLoginHandler.create(authenticate));
+
+    router.post("/register").handler(this::register);
 
     router.get(prefix + "/:username").handler(this::fetchUser);
 
@@ -65,27 +73,76 @@ public class publicApiVerticle extends AbstractVerticle {
 
     router.get(prefix + "/:username/:year/:month/:day").handler(this::dailySteps);
 
+    eventBus.consumer("dailyRankings").handler(this::publishRanking);
+
+      SockJSHandler jsHandler = SockJSHandler.create(vertx);
+
+      SockJSBridgeOptions bridgeOptions = new SockJSBridgeOptions()
+        .addInboundPermitted(new PermittedOptions().setAddressRegex("updates.*"))
+          .addOutboundPermitted(new PermittedOptions().setAddressRegex("updates.*"));
+
+      router.mountSubRouter("/eventbus",jsHandler.bridge(bridgeOptions));
+
+      router.route().handler(StaticHandler.create().setCachingEnabled(false));
+
     vertx.createHttpServer().requestHandler(router).listen(HTTP_PORT).onSuccess(done -> logger.info("Listening on port 4000"));
 
     startPromise.complete();
 
   }catch (Exception exception){
-      logger.error(exception.getMessage());
+      logger.error( publicApiVerticle.class.getName() + exception.getMessage());
       exception.printStackTrace();
     }
   }
 
-  private void checkUser(RoutingContext context) {
+  private void publishRanking(Message message) {
 
-    String subject = context.user().principal().getString("sub");
+    JsonArray rankings = (JsonArray) message.body();
 
-    if (!context.pathParam("username").equals(subject)) {
+    for (Object rank : rankings){
 
-      sendStatusCode(context, 403);
-    } else {
-      context.next();
+      JsonObject device =(JsonObject)rank;
+
+      deviceOwner(device).onSuccess(handler->{
+
+        String userName = handler.toString();
+
+        device.put("userName",userName);
+
+        ranking.add(device);
+      });
     }
+
+    eventBus.publish("updates.publicRanking",ranking);
+
+    ranking.clear();
   }
+
+  private Future<String> deviceOwner(JsonObject rank) {
+
+    Promise<String> promise = Promise.promise();
+
+    String deviceId = rank.getString("deviceId");
+
+    eventBus.request("whoOwns",deviceId,messageAsyncResult -> {
+
+      if (messageAsyncResult.succeeded()){
+
+        String userName = messageAsyncResult.result().body().toString();
+
+        logger.info("device ownwer fetced "+ userName);
+
+        promise.complete(userName);
+
+      }
+      else {
+        logger.error("can't fec device owner");
+      }
+
+    });
+    return promise.future();
+  }
+
 
   private void register(RoutingContext context) {
 
@@ -93,13 +150,14 @@ public class publicApiVerticle extends AbstractVerticle {
 
     JsonObject userData = context.body().asJsonObject();
 
-    logger.info("user data" + userData.toString());
+    logger.info("user data " + userData.toString());
 
     eventBus.request("register" ,userData,reply -> {if (reply.succeeded()){
 
-      sendStatusCode(context,200);
+      context.response().setChunked(true);
 
-//      context.response().end("user added");
+      forwardJsonOrStatusCode(context,new JsonObject().put("message","user added"));
+
     }
     else {
 
@@ -108,11 +166,6 @@ public class publicApiVerticle extends AbstractVerticle {
     });
   }
 
-  private void sendStatusCode(RoutingContext context, int code) {
-
-    context.response().setStatusCode(code).end();
-
-  }
 
   private void sendBadGateway(RoutingContext context, Throwable error) {
 
@@ -121,72 +174,12 @@ public class publicApiVerticle extends AbstractVerticle {
     context.fail(502);
   }
 
-  private void token(RoutingContext context) {
 
-    JsonObject payload = context.body().asJsonObject();
+  private void fetchUser(RoutingContext context) {
 
-    String username = payload.getString("username");
+    String userName = context.request().params().get("username");
 
-    eventBus.request("token" ,payload,reply ->{
-
-      if(reply.succeeded()){
-        fetchUser(context)
-          .onSuccess(details -> {String deviceID =details.getString("deviceId");
-            makeJwtToken(username,deviceID).onComplete(result ->{
-
-              if (result.succeeded()){
-
-                sendToken(context,result.result());
-              }
-              else {
-                handleAuthError(context,result.cause());
-              }
-          });
-          });
-      }
-    });
-
-  }
-
-
-  private Future<String> makeJwtToken(String username, String deviceId) {
-
-    Promise<String> promise = Promise.promise();
-
-    JsonObject claims = new JsonObject()
-      .put("deviceId", deviceId);
-
-    JWTOptions jwtOptions = new JWTOptions()
-      .setAlgorithm("RS256")
-      .setExpiresInMinutes(10_080) // 7 days
-      .setIssuer("10k-steps-api")
-      .setSubject(username);
-
-    String token = jwtAuth.generateToken(claims, jwtOptions);
-
-    promise.complete(token);
-
-    return promise.future() ;
-
-  }
-
-  private void handleAuthError(RoutingContext context, Throwable error) {
-
-    logger.error("Authentication error", error);
-
-    context.fail(401);
-  }
-
-  private void sendToken(RoutingContext context, String token) {
-
-    context.response().putHeader("Content-Type", "application/jwt").end(token);
-  }
-
-  private Future<JsonObject> fetchUser(RoutingContext context) {
-
-    Promise<JsonObject> promise = Promise.promise();
-
-    eventBus.request("fetchUser",context.body().asJsonObject(),reply ->{
+    eventBus.request("fetchUser",userName,reply ->{
 
       JsonObject userData = (JsonObject) reply.result().body();
 
@@ -194,17 +187,15 @@ public class publicApiVerticle extends AbstractVerticle {
 
         forwardJsonOrStatusCode(context,userData);
 
-        promise.complete(userData);
       }
       else {
 
         sendBadGateway(context,reply.cause());
 
-        promise.fail(reply.cause());
       }
 
     });
-    return promise.future();
+
   }
 
   private void forwardJsonOrStatusCode(RoutingContext ctx,JsonObject resp) {
@@ -223,9 +214,9 @@ public class publicApiVerticle extends AbstractVerticle {
 
       if(messageAsyncResult.succeeded()){
 
-        JsonObject totalStep = (JsonObject) messageAsyncResult;
+        Long totalStep = (Long) messageAsyncResult.result().body();
 
-        forwardJsonOrStatusCode(context,totalStep);
+        forwardJsonOrStatusCode(context,new JsonObject().put("total steps", totalStep));
       }else {
 
         sendBadGateway(context,messageAsyncResult.cause());
@@ -239,7 +230,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
     JsonObject monthlyStep = new JsonObject();
 
-    monthlyStep.put( "deviceId" , context.user().principal().getString("deviceId"));
+    monthlyStep.put( "deviceId" , 1000);
 
     monthlyStep.put( "year" , context.pathParam("year"));
 
@@ -249,9 +240,9 @@ public class publicApiVerticle extends AbstractVerticle {
 
       if(messageAsyncResult.succeeded()){
 
-        JsonObject totalStep = (JsonObject) messageAsyncResult;
+        Long totalStep = (Long) messageAsyncResult.result().body();
 
-        forwardJsonOrStatusCode(context,totalStep);
+        forwardJsonOrStatusCode(context,new JsonObject().put("monthly step",totalStep));
       }else {
 
         sendBadGateway(context,messageAsyncResult.cause());
@@ -265,7 +256,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
     JsonObject dailyStep = new JsonObject();
 
-    dailyStep.put( "deviceId" , context.user().principal().getString("deviceId"));
+    dailyStep.put( "deviceId" , 1000);
 
     dailyStep.put( "year" , context.pathParam("year"));
 
@@ -277,9 +268,9 @@ public class publicApiVerticle extends AbstractVerticle {
 
       if(messageAsyncResult.succeeded()){
 
-        JsonObject totalStep = (JsonObject) messageAsyncResult;
+        Long totalStep = (Long) messageAsyncResult.result().body();
 
-        forwardJsonOrStatusCode(context,totalStep);
+        forwardJsonOrStatusCode(context,new JsonObject().put("daily step",totalStep));
       }else {
 
         sendBadGateway(context,messageAsyncResult.cause());
@@ -301,9 +292,9 @@ public class publicApiVerticle extends AbstractVerticle {
 
       if(messageAsyncResult.succeeded()){
 
-        JsonObject totalStep = (JsonObject) messageAsyncResult;
+        Long totalStep = (Long) messageAsyncResult.result().body();
 
-        forwardJsonOrStatusCode(context,totalStep);
+        forwardJsonOrStatusCode(context,new JsonObject().put("yearly Steps ", totalStep));
       }else {
 
         sendBadGateway(context,messageAsyncResult.cause());

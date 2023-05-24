@@ -18,149 +18,140 @@ public class userProfile extends AbstractVerticle {
 
   private static final Logger logger = LoggerFactory.getLogger(userProfile.class);
 
-  // add h2
-
+  EventBus eventBus;
   public void start(Promise<Void> startPromise){
     try{
 
-      EventBus eventBus = vertx.eventBus();
+      eventBus = vertx.eventBus();
 
-      eventBus.consumer("register",message -> {
+      eventBus.consumer("register").handler(this::register);
 
-        System.out.println("hiii "+message.body());
+      eventBus.consumer("fetchUser").handler(this::fetchUser);
 
-        JsonObject userData = (JsonObject) message.body();
-
-
-         register(userData)
-            .onSuccess((registered ->{
-            message.reply("user Registered");
-          }));
-
-      });
-
-      eventBus.consumer("fetchUser",message -> {
-
-        JsonObject userData = (JsonObject) message.body();
-
-        fetchUser(userData)
-          .onSuccess((registered ->{
-            message.reply(registered);
-          }));
-
-      });
+      eventBus.consumer("whoOwns").handler(this::whoOwns);
 
 
     }catch (Exception exception){
 
       logger.error(exception.getMessage());
+
       exception.printStackTrace();
     }
 
 
   }
 
-  private Future<Void> validateRegistration(JsonObject message){
-
-    Promise<Void> promise = Promise.promise();
-
-    if (registrationFieldMissing(message)||registrationFieldIsWrong(message)){
-
-      promise.complete();
-
-      System.out.println("validation completed");
-
-
-    }
-
-    return promise.future();
-
-  }
-
   private boolean registrationFieldMissing(JsonObject message){
 
     return (message.containsKey("username") && message.containsKey("password")
-    && message.containsKey("email") && message.containsKey("city")
-      && message.containsKey("deviceId") && message.containsKey("makePublic"));
+    && message.containsKey("email") && message.containsKey("city"));
 
   }
-
-  private final Pattern validUsername = Pattern.compile("\\w[\\w+|-]*");
-  private final Pattern validDeviceId = Pattern.compile("\\w[\\w+|-]*");
 
   private final Pattern validEmail = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
 
   private boolean registrationFieldIsWrong(JsonObject body) {
 
-    return !validUsername.matcher(body.getString("username")).matches() ||
-      !validEmail.matcher(body.getString("email")).matches() ||
-      body.getString("password").trim().isEmpty();
+    return
+      !(validEmail.matcher(body.getString("email")).matches() ||
+      body.getString("password").trim().isEmpty()|| body.getString("username").trim().isEmpty()
+      || body.getString("city").trim().isEmpty());
   }
 
-  private Future<Void> register(JsonObject message){
+  private  void register(Message message){
 
-    Promise<Void> promise= Promise.promise();
-
-    EventBus eventBus = vertx.eventBus();
+    JsonObject userData = (JsonObject) message.body();
 
     JsonObject newUserData = new JsonObject();
 
-    newUserData.put("username",message.getString("username"));
-    newUserData.put("password",message.getString("password"));
-    newUserData.put("email",message.getString("email"));
-    newUserData.put("city",message.getString("city"));
-    newUserData.put("makePublic",message.getString("makePublic"));
+    newUserData.put("username",userData.getString("username"));
 
-    eventBus.request("register_in_DB",newUserData,reply ->{
+    newUserData.put("password",userData.getString("password"));
 
-      if(reply.succeeded()){
+    newUserData.put("email",userData.getString("email"));
 
-        promise.complete();
+    newUserData.put("city",userData.getString("city"));
+
+    if (registrationFieldMissing(newUserData)&&registrationFieldIsWrong(newUserData)) {
+
+      logger.info("valid user");
+
+      eventBus.request("register_in_DB", newUserData, reply -> {
+
+        if (reply.succeeded()) {
+
+          message.reply("new user added");
+
+          logger.info("new user added");
 
 
-      }
+        } else {
 
-    });
+          message.fail(reply.cause().hashCode(), reply.cause().getMessage());
 
-    return promise.future();
+          logger.error("new user addition failed");
+
+        }
+
+      });
+    }
+    else {
+
+      message.fail(502,"invalid user");
+      logger.error("invalid user");
+    }
+
   }
 
-  private Future<JsonObject> fetchUser (JsonObject message){
+  private void fetchUser (Message message){
 
-    Promise<JsonObject> promise = Promise.promise();
-
-    String userName = message.getString("username");
-
-    EventBus eventBus = vertx.eventBus();
+    String userName = (String) message.body();
 
     eventBus.request("getUserDataFromDB",userName,reply ->{
 
-      JsonObject userData = (JsonObject) reply.result();
-
       if (reply.succeeded()){
 
-        promise.complete(userData);
+        JsonObject userData = (JsonObject) reply.result().body();
+
+        message.reply(userData);
+
+        logger.info("Data fetched for user :" + userName);
+
+      }else {
+
+        message.fail(reply.cause().hashCode(),reply.cause().toString());
+
+        logger.error("Data fetch failed for user:" + userName);
       }
 
     });
 
-
-    return promise.future();
   }
 
-  private void updateUser(JsonObject message){
+  private  void whoOwns(Message message){
 
-    // get data from message and update table
+
+    String deviceId =  message.body().toString();
+
+    eventBus.request("deviceOwner",deviceId,reply->{
+
+      if(reply.succeeded()){
+
+        String username = reply.result().body().toString();
+
+        message.reply(username);
+
+        logger.info("user for device" + deviceId + " "+ username);
+      }
+      else {
+
+        message.fail(reply.cause().hashCode(),reply.cause().getMessage());
+
+        logger.error("getting device owner failed"+reply.cause().getMessage());
+      }
+
+    });
+
   }
-
-  private  void whoOwns(JsonObject message){
-
-    // get username of device id
-
-  }
-
-
-
-
 
 }

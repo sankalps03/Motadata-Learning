@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User profile</title>
+
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+
+  />
+  <link
+    rel="stylesheet"
+    href="userProfile.css"
+
+  />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+
+  />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+  <script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
+  <script src="https://unpkg.io/@vertx/eventbus-bridge-client.js@1.0.0-1/vertx-eventbus.js"></script>
+
+  <script src="user.js"></script>
+</head>
+<body >
+<div class="container mt-5 mb-5">
+  <div class="row no-gutters">
+    <div class="col-md-8 col-lg-8">
+      <div class="d-flex flex-column">
+        <div class="d-flex flex-row justify-content-between align-items-center p-5 bg-dark text-white">
+          <h3 class="display-5" id = "usName">Sankalp</h3><h6 class="display-5" id = "email">sankalpsingh@motadata.com</h6><h6 class="display-5" id = "city">Ahmedabad</h6><h6 class="display-5" id = "deviceId">1111</h6>          <a href="/logout">Logout</a>
+        </div>
+        <div class="p-3 bg-black text-white">
+          <h4>
+            Step statistics
+          </h4>
+          <button class="btn btn-success"onclick=" location.reload()"
+          >Refresh</button>
+
+        </div>
+        <div class="d-flex flex-row text-white">
+          <div class="p-4 bg-primary text-center skill-block">
+            <h4 id = "dailySteps">00</h4 >
+            <h6>Daily</h6>
+          </div>
+          <div class="p-3 bg-success text-center skill-block">
+            <h4 id="monthlysteps">00</h4>
+            <h6>Monthly</h6>
+          </div>
+          <div class="p-3 bg-warning text-center skill-block">
+            <h4 id = "yearlySteps">00</h4>
+            <h6>Yearly</h6>
+          </div>
+          <div class="p-3 bg-danger text-center skill-block">
+            <h4 id = "totalSteps">00</h4>
+            <h6>Lifetime</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
