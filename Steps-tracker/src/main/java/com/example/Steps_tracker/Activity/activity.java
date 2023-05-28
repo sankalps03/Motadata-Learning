@@ -44,7 +44,7 @@ public class activity extends AbstractVerticle {
 
     eventBus.consumer("incomingSteps").handler(this::insertSteps);
 
-    vertx.setPeriodic(3000,handler->{
+    vertx.setPeriodic(10000,handler->{
 
       dailyRanking();
 

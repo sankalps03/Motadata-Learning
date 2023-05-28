@@ -55,23 +55,23 @@ public class publicApiVerticle extends AbstractVerticle {
 
     String prefix = "/user";
 
-    router.route(prefix+"/*").handler(RedirectAuthHandler.create(authenticate, "/loginPage.html"));
+//    router.route(prefix+"/*").handler(BasicAuthHandler.create(authenticate));
 
-    router.route(prefix+"/*").handler(StaticHandler.create().setIndexPage("userProfile.html"));
+    router.route(prefix+"/*").handler(StaticHandler.create().setCachingEnabled(false).setIndexPage("userProfile.html"));
 
-    router.route("/loginHandler").handler(FormLoginHandler.create(authenticate));
+//    router.route("/loginHandler").handler(FormLoginHandler.create(authenticate));
 
     router.post("/register").handler(this::register);
 
     router.get(prefix + "/:username").handler(this::fetchUser);
 
-    router.get(prefix + "/:username/total").handler(this::totalSteps);
+    router.get(prefix + "/:deviceID/total").handler(this::totalSteps);
 
-      router.get(prefix + "/:username/:year").handler(this::yearlySteps);
+      router.get(prefix + "/:deviceID/:year").handler(this::yearlySteps);
 
-    router.get(prefix + "/:username/:year/:month").handler(this::monthlySteps);
+    router.get(prefix + "/:deviceID/:year/:month").handler(this::monthlySteps);
 
-    router.get(prefix + "/:username/:year/:month/:day").handler(this::dailySteps);
+    router.get(prefix + "/:deviceID/:year/:month/:day").handler(this::dailySteps);
 
     eventBus.consumer("dailyRankings").handler(this::publishRanking);
 
@@ -146,8 +146,6 @@ public class publicApiVerticle extends AbstractVerticle {
 
   private void register(RoutingContext context) {
 
-    System.out.println(context.body().asString());
-
     JsonObject userData = context.body().asJsonObject();
 
     logger.info("user data " + userData.toString());
@@ -208,7 +206,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
   private void totalSteps(RoutingContext context) {
 
-    String deviceId = "1000";
+    String deviceId = context.request().getParam("deviceId");
 
     eventBus.request("totalSteps",deviceId,messageAsyncResult -> {
 
@@ -216,7 +214,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
         Long totalStep = (Long) messageAsyncResult.result().body();
 
-        forwardJsonOrStatusCode(context,new JsonObject().put("total steps", totalStep));
+        forwardJsonOrStatusCode(context,new JsonObject().put("totalSteps", totalStep));
       }else {
 
         sendBadGateway(context,messageAsyncResult.cause());
@@ -230,7 +228,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
     JsonObject monthlyStep = new JsonObject();
 
-    monthlyStep.put( "deviceId" , 1000);
+    monthlyStep.put( "deviceId" , context.request().getParam("deviceId"));
 
     monthlyStep.put( "year" , context.pathParam("year"));
 
@@ -242,7 +240,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
         Long totalStep = (Long) messageAsyncResult.result().body();
 
-        forwardJsonOrStatusCode(context,new JsonObject().put("monthly step",totalStep));
+        forwardJsonOrStatusCode(context,new JsonObject().put("monthlySteps",totalStep));
       }else {
 
         sendBadGateway(context,messageAsyncResult.cause());
@@ -256,7 +254,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
     JsonObject dailyStep = new JsonObject();
 
-    dailyStep.put( "deviceId" , 1000);
+    dailyStep.put( "deviceId" , context.request().getParam("deviceId"));
 
     dailyStep.put( "year" , context.pathParam("year"));
 
@@ -270,7 +268,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
         Long totalStep = (Long) messageAsyncResult.result().body();
 
-        forwardJsonOrStatusCode(context,new JsonObject().put("daily step",totalStep));
+        forwardJsonOrStatusCode(context,new JsonObject().put("dailySteps",totalStep));
       }else {
 
         sendBadGateway(context,messageAsyncResult.cause());
@@ -284,7 +282,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
     JsonObject yearlyStep = new JsonObject();
 
-    yearlyStep.put( "deviceId" , 1000);
+    yearlyStep.put( "deviceId" , context.request().getParam("deviceId"));
 
     yearlyStep.put( "year" , context.pathParam("year"));
 
@@ -294,7 +292,7 @@ public class publicApiVerticle extends AbstractVerticle {
 
         Long totalStep = (Long) messageAsyncResult.result().body();
 
-        forwardJsonOrStatusCode(context,new JsonObject().put("yearly Steps ", totalStep));
+        forwardJsonOrStatusCode(context,new JsonObject().put("yearlySteps", totalStep));
       }else {
 
         sendBadGateway(context,messageAsyncResult.cause());

@@ -50,7 +50,7 @@ function ajaxCall (result){
     data: JSON.stringify(result.data),
     dataType: result.dataType,
     success: function (data){
-      console.log(data)
+      console.log("hii all"+data)
 
       if(result.hasOwnProperty('callback')){
         console.log(result.callback)

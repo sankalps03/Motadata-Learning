@@ -24,8 +24,6 @@ public class stepGenerator extends AbstractVerticle {
 
   public void start(Promise<Void> startPromise){
 
-    System.out.println("step generator");
-
     devices = new HashSet<>();
 
     eventBus = vertx.eventBus();
@@ -40,7 +38,7 @@ public class stepGenerator extends AbstractVerticle {
 
 
 
-    vertx.setPeriodic(3000, stepGenerator->{
+    vertx.setPeriodic(10000, stepGenerator->{
 
       for (Integer device : devices){
 

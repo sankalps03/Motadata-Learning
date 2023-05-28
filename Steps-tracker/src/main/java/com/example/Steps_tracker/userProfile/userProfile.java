@@ -72,7 +72,7 @@ public class userProfile extends AbstractVerticle {
 
     newUserData.put("city",userData.getString("city"));
 
-    if (registrationFieldMissing(newUserData)&&registrationFieldIsWrong(newUserData)) {
+//    if (registrationFieldMissing(newUserData)&&registrationFieldIsWrong(newUserData)) {
 
       logger.info("valid user");
 
@@ -94,12 +94,12 @@ public class userProfile extends AbstractVerticle {
         }
 
       });
-    }
-    else {
-
-      message.fail(502,"invalid user");
-      logger.error("invalid user");
-    }
+//    }
+//    else {
+//
+//      message.fail(400,"invalid user");
+//      logger.error("invalid user");
+//    }
 
   }
 
