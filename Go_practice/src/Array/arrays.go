@@ -16,4 +16,9 @@ func main() {
 
 	fmt.Println(array3)
 
+	for index, item := range array1 {
+
+		fmt.Printf("numbers[%d] = %d \n", index, item)
+	}
+
 }
