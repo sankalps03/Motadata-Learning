@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"runtime"
 	"runtime/pprof"
 	"sync"
@@ -19,7 +20,7 @@ func parallelismInAction() {
 
 	defer Wg.Done()
 
-	fmt.Println("go id :", getGoroutineId())
+	fmt.Println("go id :", getGoroutineId(), "pid : ", os.Getpid())
 
 	time.Sleep(time.Second * 2)
 
@@ -30,7 +31,7 @@ func parallelismInAction() {
 		}
 	}
 
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 20)
 
 	runtime.UnlockOSThread()
 }

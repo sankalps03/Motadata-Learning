@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"runtime"
 	"runtime/pprof"
 	"sync"
@@ -17,9 +18,9 @@ func concurrencyInAction() {
 
 	defer wg.Done()
 
-	fmt.Println("go id:", getGoroutineID())
+	fmt.Println("go id :", getGoroutineID(), "pid : ", os.Getpid())
 
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 20)
 
 	//for i := 0; i < 5; i++ {
 	//
