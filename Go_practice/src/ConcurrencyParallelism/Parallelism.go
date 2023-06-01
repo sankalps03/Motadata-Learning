@@ -22,7 +22,7 @@ func parallelismInAction() {
 
 	fmt.Println("go id :", getGoroutineId(), "pid : ", os.Getpid())
 
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 0)
 
 	for i := 0; i < 5; i++ {
 
@@ -47,7 +47,8 @@ func getGoroutineId() int {
 func main() {
 	count := 10
 
-	Wg.Add(count)
+	Wg.Add(11)
+	Wg.Add(-1)
 
 	log.Println("Before thread count : ", ThreadProfile.Count())
 
