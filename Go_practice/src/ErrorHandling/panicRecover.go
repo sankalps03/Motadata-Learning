@@ -2,8 +2,11 @@ package main
 
 func demo() {
 	defer func() {
+
 		recover()
+
 		defer func() {
+
 			recover() // this one recovers panic 2
 		}()
 
